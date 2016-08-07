@@ -121,11 +121,8 @@
     }
     
     
-    
     if( memDC.IsNull() )
     {
-        
-        
         _Rect rcFill1(0, 0, 200, 200);
         _Rect rcFill2(25, 25, 75, 75);
         
