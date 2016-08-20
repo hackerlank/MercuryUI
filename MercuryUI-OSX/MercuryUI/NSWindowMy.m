@@ -16,8 +16,7 @@
 {
     self = [super initWithContentRect:contentRect styleMask:aStyle backing:bufferingType defer:flag];
     NSLog(@"init");
-    
-    
+    [self setAcceptsMouseMovedEvents:YES];
     return self;
 }
 
@@ -60,7 +59,7 @@
 {
     [super mouseMoved:theEvent];
     
-    NSLog(@"mouse moved");
+    //NSLog(@"mouse moved");
 }
 
 -(void)mouseDragged:(NSEvent *)theEvent

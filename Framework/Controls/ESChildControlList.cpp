@@ -268,7 +268,7 @@ ESChildControlList::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClient){
 
 	DrawView		(pDC, pRectDC, pRectClient);
 	DrawHeader		(pDC, pRectDC, pRectClient);
-
+    
 	// Draw corner when both of scrolbars are visible. {{
 	if( m_pVScroll && m_pVScroll->IsVisible() && 
 		m_pHScroll && m_pHScroll->IsVisible() ){
@@ -512,8 +512,8 @@ ESChildControlList::DrawHeader(_DC* pDC, _Rect* pRectDC, _Rect* pRectClient){
 		rcItemDC.top		= rcHeaderDC.top;
 		rcItemDC.right		= min(rcItemDC.left + pItem->m_nWidth - nWidthDiv, rcHeaderDC.right);
 		rcItemDC.bottom		= rcHeaderDC.bottom;
-
-		m_pOwner->DrawBackground(pDC, pRectDC, pRectClient, &rcItem, _FillMode::FillMode_RepeatedImage, RGB(0, 0, 0), m_pHdrItemDefault, _Rect(0, 0, 0, 0), false);
+        
+        m_pOwner->DrawBackground(pDC, pRectDC, pRectClient, &rcItem, _FillMode::FillMode_RepeatedImage, RGB(0, 0, 0), m_pHdrItemDefault, _Rect(0, 0, 0, 0), false);
 
 		// Draw item label. {{
 //		pFont = (m_nSortCol == nLoop) ? &fontTextBold : &fontText;

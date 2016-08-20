@@ -19,6 +19,10 @@
     _DC         memDC;
     CGImageRef  image;
     MercuryBaseView* _pMercuryView;
+    
+    CGImageRef testImage;
+    NSBitmapImageRep* testImageRep;
+    _Image testImage_;
 }
 
 @end
@@ -32,7 +36,6 @@
     
     // Code here.
     _pMercuryView = new MercuryBaseView();
-    
     return self;
 }
 
@@ -40,6 +43,12 @@
 {
     if( _pMercuryView == NULL )
     {
+        NSTrackingAreaOptions options = (NSTrackingActiveAlways | NSTrackingInVisibleRect |
+                                         NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved);
+        
+        NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:self userInfo:nil];
+        [self addTrackingArea: area];
+        
         /*
         ESChildControlInfo* i1 = new ESChildControlInfo();
         i1->m_nId = 10000;
@@ -101,6 +110,10 @@
         _pMercuryView->OnSize(0, (int)frameSize.width, (int)frameSize.height);
         [self setNeedsDisplay:YES];
     }
+    else
+    {
+        //[self initializeMercuryView:self.frame wnd:[self window]];
+    }
 }
 
 -(BOOL)isFlipped
@@ -108,6 +121,46 @@
     return YES;
 }
 
+-(void)mouseMoved:(NSEvent *)theEvent
+{
+    [super mouseMoved:theEvent];
+    if(_pMercuryView != NULL)
+    {
+        NSPoint pt = [theEvent locationInWindow];
+        NSPoint ptView = [self convertPoint:pt toView:self];
+        _pMercuryView->OnMouseMove(0, _Point(ptView.x, [self bounds].size.height - ptView.y));
+        NSLog(@"mouse moved1");
+    }
+}
+
+-(void)mouseDragged:(NSEvent *)theEvent
+{
+    [super mouseDragged:theEvent];
+    
+    NSLog(@"mouse dragged");
+}
+
+-(void)mouseDown:(NSEvent *)theEvent
+{
+    [super mouseDown:theEvent];
+    if(_pMercuryView != NULL)
+    {
+        NSPoint pt = [theEvent locationInWindow];
+        NSPoint ptView = [self convertPoint:pt toView:self];
+        _pMercuryView->OnLButtonDown(0, _Point(ptView.x, [self bounds].size.height - ptView.y));
+    }
+}
+
+-(void)mouseUp:(NSEvent *)theEvent
+{
+    [super mouseUp:theEvent];
+    if(_pMercuryView != NULL)
+    {
+        NSPoint pt = [theEvent locationInWindow];
+        NSPoint ptView = [self convertPoint:pt toView:self];
+        _pMercuryView->OnLButtonUp(0, _Point(ptView.x, [self bounds].size.height - ptView.y));
+    }
+}
 
 -(void)drawRect:(NSRect)rect
 {
@@ -119,6 +172,60 @@
         _Rect rcDraw(rect.origin.x, rect.origin.y, (rect.origin.x + rect.size.width), (rect.origin.y + rect.size.height));
         _pMercuryView->OnPaint(context, rcDraw);
     }
+    
+    return;
+    if(testImage_.IsNull())
+    {
+        //testImage_.CreateDIBBitmap(32, nullptr, 0, 0);
+    }
+
+    if(testImage == nullptr)
+    {
+        BYTE* pColorTable = (BYTE*)malloc(sizeof(UINT)*g_szVScrollThumbImg.cy*g_szVScrollThumbImg.cx);
+        int loop = 0;
+        for(int i=0; i<4*g_szVScrollThumbImg.cy*g_szVScrollThumbImg.cx; i+=4)
+        {
+            UINT pixel = g_nVScrollThumbImg[loop];
+            pColorTable[i] = (BYTE)((pixel & 0xFF0000)>>16); // R
+            pColorTable[i+1] = (BYTE)((pixel & 0xFF00)>>8); // G
+            pColorTable[i+2] = (BYTE)(pixel & 0xFF); // B
+            pColorTable[i+3] = (BYTE)((pixel & 0xFF000000)>>24); // A
+            //pColorTable[i+3] = 0xFF; // A
+            loop ++;
+        }
+        
+        int nWidth = g_szHeaderItemNormalImg.cx, nHeight = g_szHeaderItemNormalImg.cy, bytesPerRow = g_szHeaderItemNormalImg.cx*4, nBPP = 32;
+        CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
+        //const UINT *pColorTable = &g_nVScrollThumbImg[0];
+        CGDataProviderRef dataProviderRef = CGDataProviderCreateWithData(NULL, &g_nHeaderItemNormalImg[0], (bytesPerRow*nHeight), NULL);
+        CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedLast|kCGBitmapByteOrder32Big;
+        
+        
+        testImage = CGImageCreate(nWidth, nHeight, 8, nBPP, bytesPerRow, colorSpaceRef, bitmapInfo, dataProviderRef,
+                                       NULL, true, kCGRenderingIntentDefault);
+        
+        free(pColorTable);
+        CGDataProviderRelease(dataProviderRef);
+        CGColorSpaceRelease(colorSpaceRef);
+        
+        testImageRep = [[NSBitmapImageRep alloc] initWithCGImage:testImage];
+        
+        testImage_.Attach(testImage);
+    }
+    
+    //[[NSBitmapImageRep alloc] initWithCGImage:image]
+    
+    CGContextRef context = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+    //CGContextDrawImage(context, CGRectMake(0.0, 0.0, g_szVScrollThumbImg.cx, g_szVScrollThumbImg.cy), testImage);
+    //CGContextDrawImage(context, CGRectMake(0.0, 0.0, g_szVScrollThumbImg.cx, g_szVScrollThumbImg.cy), [testImageRep CGImage]);
+    
+    _DC d;
+    
+    _Rect rc(0, 0, (int)testImageRep.size.width, (int)testImageRep.size.height);
+    d.Attach(context);
+    testImage_.RenderImage(&d, rc, rc, false, false);
+    d.Detach();
+    return;
     
     
     if( memDC.IsNull() )

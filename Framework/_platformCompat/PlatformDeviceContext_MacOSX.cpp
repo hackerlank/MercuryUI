@@ -16,6 +16,8 @@ _DC::_DC() {
     
     _dibImageInfo = new BITMAP;
     memset(_dibImageInfo, 0, sizeof(BITMAP));
+    _fontSelected = nil;
+    _imageSelected = nil;
 	}
 
 _DC::~_DC(){
@@ -30,7 +32,7 @@ _DC::Attach(DCDef dc){
 	ASSERT(_context == NULL);
 	if( _context )
 		return FALSE;
-	//_context = dc;
+	_context = [NSGraphicsContext graphicsContextWithCGContext:dc flipped:YES];
 	return TRUE;
 	}
 
@@ -38,11 +40,9 @@ DCDef
 _DC::Detach(){
 	if( !_context )
 		return NULL;
-    /*
-	DCDef ret = context_;
-	context_ = NULL;
-     */
-	return nil;
+	DCDef ret = [_context CGContext];
+	_context = nil;
+	return ret;
 	}
 
 void

@@ -364,7 +364,7 @@ _Image::CreateDIBBitmap(int nBPP, UINT* pColorTable, UINT nWidth, UINT nHeight, 
     
     CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
     CGDataProviderRef dataProviderRef = CGDataProviderCreateWithData(NULL, pColorTable, (bytesPerRow*nHeight), NULL);
-    CGBitmapInfo bitmapInfo = kCGImageAlphaLast;
+    CGBitmapInfo bitmapInfo = kCGImageAlphaNoneSkipLast;
     
     ImageDef image = CGImageCreate(nWidth, nHeight, 8, nBPP, bytesPerRow, colorSpaceRef, bitmapInfo, dataProviderRef,
                                    NULL, true, kCGRenderingIntentDefault);
@@ -377,8 +377,12 @@ _Image::CreateDIBBitmap(int nBPP, UINT* pColorTable, UINT nWidth, UINT nHeight, 
         if( pBmp ){
             memcpy(pBmp, &bmpInfo_, sizeof(BITMAP));
         }
+        CGImageRelease(image);
         return TRUE;
     }
+    
+    if(image != nullptr)
+        CGImageRelease(image);
 	return FALSE;
 	}
 
@@ -1007,17 +1011,26 @@ _Image::RenderImage(_DC* pDC, const _Rect rcClipDestDC, const _Rect rcDestDC, bo
 	{
         if( IsNull() )
             return FALSE;
-        
         CGRect rc = CGRectMake((float)rcClipDestDC.left, (float)rcClipDestDC.top,
                                (float)(rcClipDestDC.right-rcClipDestDC.left), (float)(rcClipDestDC.bottom-rcClipDestDC.top));
-       
         DCDef dc = *pDC;
         CGContextSaveGState(dc);
-        CGContextTranslateCTM(dc, 0, image_.size.height);
-        CGContextScaleCTM(dc, 1.0, -1.0);
-        CGContextDrawImage(dc, rc, [image_ CGImage]);
+        //CGContextTranslateCTM(dc, 0, image_.size.height);
+        //CGContextScaleCTM(dc, 1.0, -1.0);
+        if(bScale)
+        {
+            //CGContextSetRGBFillColor(dc, 1.0, 0.0, 0.3, 1.0);
+            //CGContextFillRect(dc, rc);
+            CGContextClipToRect(dc, rc);
+            CGContextDrawTiledImage(dc, rc, [image_ CGImage]);
+        }
+        else
+        {
+            //CGContextSetRGBFillColor(dc, 1.0, 0.0, 0.3, 1.0);
+            //CGContextFillRect(dc, rc);
+            CGContextDrawImage(dc, rc, [image_ CGImage]);
+        }
         CGContextRestoreGState(dc);
-        //CGContextDrawTiledImage(*pDC, rc, [image_ CGImage]);
         return TRUE;
 	}
 

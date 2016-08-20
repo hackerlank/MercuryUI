@@ -41,6 +41,8 @@ class ESChildControl;
 -(void)			OnRedrawRect:(CPtrArray*)pArrRects AtOnce:(BOOL)bAtOnce;
 @end
 
+#pragma pack(1)
+
 // ESFrameBase dialog
 class ESFrameBase
 {
@@ -53,7 +55,7 @@ public:
 	friend class MercuryBaseViewInfo;
 
 //	operator HWND		() const {return m_hWnd;};
-	bool				IsWindow				(){ return /*::IsWindow(m_hWnd) ? true : */false; };
+	bool				IsWindow				(){ return m_hWnd != nil; };
 	bool				IsWindowVisible			(){ return /*::IsWindowVisible(m_hWnd) ? true : */false; };
     void				SetHWND					(NSWindow* pWindow){m_hWnd = pWindow;};
 

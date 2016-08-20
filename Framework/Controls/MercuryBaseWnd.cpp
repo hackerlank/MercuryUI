@@ -627,10 +627,13 @@ MercuryBaseView::RedrawRect(_Rect rcRedraw, BOOL bRedrawAtOnce /*= FALSE*/){
 		return;
 	//DWORD dwThreadId = ::GetCurrentThreadId();
 	if( /*dwThreadId == ::GetWindowThreadProcessId(GetHWND(), NULL)*/TRUE ){
+        
+        [[m_hWnd contentView] setNeedsDisplayInRect:CGRectMake(rcRedraw.left, rcRedraw.top, rcRedraw.Width(), rcRedraw.Height())];
+        /*
 		if (bRedrawAtOnce)
 			Redraw(rcRedraw);
 		else
-			InvalidateRect(rcRedraw, FALSE);
+			InvalidateRect(rcRedraw, FALSE);*/
 		}
 	else{
 		/*
@@ -1175,7 +1178,7 @@ MercuryBaseView::OnLButtonDown(UINT nFlags, _Point point){
 //	_Rect rcRedraw (point.x - 40, point.y - 40, point.x + 40, point.y + 40);
 //	RedrawRect(rcRedraw, 1);
     
-    /*
+    
 	// Designer mode. {{
 	if( m_bDesignerMode ){
 //		m_pControlUnderCursor	= ChildControlByPoint(point);
@@ -1185,7 +1188,7 @@ MercuryBaseView::OnLButtonDown(UINT nFlags, _Point point){
 		if( m_pControlUnderCursor && m_pControlUnderCursor->MouseUpDownEventsInDesigner() && IsControlSelected(m_pControlUnderCursor) ){
 			if( m_pControlUnderCursor ){
 				m_pControlCaptured = m_pControlUnderCursor;
-				::SetCapture(m_hWnd);
+				//::SetCapture(m_hWnd);
 				m_pControlUnderCursor->OnLButtonDown(point, nFlags);
 				}
 
@@ -1194,8 +1197,8 @@ MercuryBaseView::OnLButtonDown(UINT nFlags, _Point point){
 			return;
 			}
 
-		if( (nFlags&MK_CONTROL) != MK_CONTROL )
-			ClearSelections(true);
+		//if( (nFlags&MK_CONTROL) != MK_CONTROL )
+		//	ClearSelections(true);
 		if( AddInSelectedList(m_pControlUnderCursor) )
 			m_pControlUnderCursor->Redraw();
 
@@ -1217,7 +1220,7 @@ MercuryBaseView::OnLButtonDown(UINT nFlags, _Point point){
 
 	if( m_pControlUnderCursor ){
 		m_pControlCaptured = m_pControlUnderCursor;
-		::SetCapture(m_hWnd);
+		//::SetCapture(m_hWnd);
 		m_pControlUnderCursor->OnLButtonDown(point, nFlags);
 		}
 	else{
@@ -1226,13 +1229,13 @@ MercuryBaseView::OnLButtonDown(UINT nFlags, _Point point){
 			GetClientRectMy(rcClient);
 			_Rect rcCaption(0, 0, rcClient.right, m_info.m_rcOmitBorder.top);
 			if( rcCaption.PtInRect(point) ){
-				::SendMessage(m_hWnd, WM_NCLBUTTONDOWN, HTCAPTION, MAKELONG(point.x, point.y));
+				//::SendMessage(m_hWnd, WM_NCLBUTTONDOWN, HTCAPTION, MAKELONG(point.x, point.y));
 				}
 			}
 		}
 	// Set control focus.
 	SetChildFocus(m_pControlUnderCursor);
-*/
+
 	ESFrameBase::OnLButtonDown(nFlags, point);
 	}
 

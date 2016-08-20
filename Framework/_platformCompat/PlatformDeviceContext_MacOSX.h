@@ -109,7 +109,7 @@ protected:
     ImageDef                _imageSelected;
     
 	NSGraphicsContext*      _context;
-    BITMAP*                  _dibImageInfo;
+    BITMAP*                 _dibImageInfo;
     
     _Font*                   _fontSelected;
     NSMutableDictionary*    _fontAttributes;
