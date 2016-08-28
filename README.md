@@ -1,2 +1,2 @@
 # MercuryUI
-MercuryUI cross-platform UI. 
+MercuryUI cross-platform C++/Objective-C GUI. 
