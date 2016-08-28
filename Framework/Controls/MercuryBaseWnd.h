@@ -470,26 +470,6 @@ private:
 	volatile bool									m_bRedrawOptimizeTimerIsOn;		// Redraw optimize timer status.
 	volatile UINT_PTR								m_nRedrawOptimizeTimeId;
 public:
-    static VariableInfo* Gett()
-    {
-        
-        
-        static VariableInfo _temp[] = {
-            {_T(""), _T(""), VariableType::VT_None, -1, false, false, false },
-            {_T(""), _T(""), VariableType::VT_None, -1, false, false, false },
-            {_T(""), _T(""), VariableType::VT_None, -1, false, false, false },
-            {_T(""), _T(""), VariableType::VT_None, -1, false, false, false },
-            {_T(""), _T(""), VariableType::VT_None, -1, false, false, false },
-            {_T(""), _T(""), VariableType::VT_None, -1, false, false, false },
-            {_T(""), _T(""), VariableType::VT_None, -1, false, false, false },
-            {_T(""), _T(""), VariableType::VT_None, -1, false, false, false },
-            {_T(""), _T(""), VariableType::VT_None, -1, false, false, false },
-        };
-
-        return _temp;
-    }
-
-public:
 	virtual BOOL	OnEraseBkgnd				(_DC *pDC);
 	virtual void	OnPaint						(DCDef dc, _Rect rcRedraw);
 

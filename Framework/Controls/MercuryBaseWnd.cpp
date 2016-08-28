@@ -627,13 +627,13 @@ MercuryBaseView::RedrawRect(_Rect rcRedraw, BOOL bRedrawAtOnce /*= FALSE*/){
 		return;
 	//DWORD dwThreadId = ::GetCurrentThreadId();
 	if( /*dwThreadId == ::GetWindowThreadProcessId(GetHWND(), NULL)*/TRUE ){
-        
-        [[m_hWnd contentView] setNeedsDisplayInRect:CGRectMake(rcRedraw.left, rcRedraw.top, rcRedraw.Width(), rcRedraw.Height())];
-        /*
-		if (bRedrawAtOnce)
-			Redraw(rcRedraw);
-		else
-			InvalidateRect(rcRedraw, FALSE);*/
+#ifdef __APPLE__
+        bRedrawAtOnce = FALSE;
+#endif
+        if (bRedrawAtOnce)
+            Redraw(rcRedraw);
+        else
+            InvalidateRect(rcRedraw, FALSE);
 		}
 	else{
 		/*
@@ -692,14 +692,17 @@ MercuryBaseView::RedrawMultipleRects(_Rect* pRectsRedraw, int nCt, BOOL bRedrawA
 
 	//DWORD dwThreadId = ::GetCurrentThreadId();
 	if( /*dwThreadId == ::GetWindowThreadProcessId(GetHWND(), NULL)*/TRUE ){
-		if( bRedrawAtOnce ){
-			for(int i=0; i<nCt; i++)
-				Redraw(pRectsRedraw[i]);
-			}
-		else{
-			for(int i=0; i<nCt; i++)
-				InvalidateRect(pRectsRedraw[i], FALSE);
-			}
+#ifdef __APPLE__
+        bRedrawAtOnce = FALSE;
+#endif
+        if( bRedrawAtOnce ){
+            for(int i=0; i<nCt; i++)
+                Redraw(pRectsRedraw[i]);
+        }
+        else{
+            for(int i=0; i<nCt; i++)
+                InvalidateRect(pRectsRedraw[i], FALSE);
+            }
 		}
 	else{
 		/*
@@ -917,7 +920,7 @@ MercuryBaseView::OnSize(UINT nType, int cx, int cy){
 			}
 		// Resize child controls.
 		ResizeChildControls(cx, cy);
-		// Redraw child controls.
+		// Redraw child controls. [OSX: automatically sent redraw by system]
 		//Redraw((CGContextRef)[[NSGraphicsContext currentContext] graphicsPort], _Rect(0, 0, cx, cy));
 		}
 	}
@@ -1019,10 +1022,7 @@ MercuryBaseView::OnMouseMove(UINT nFlags, _Point point){
 			}
 
 		m_bMoving = false;
-
-//		m_pControlUnderCursor = ChildControlByPoint(point);
 		m_pControlUnderCursor = m_layerMan.GetTopMostChildByPoint(point);
-		//CView::OnMouseMove(nFlags, point);
 		return;
 		}
 
@@ -1044,8 +1044,7 @@ MercuryBaseView::OnMouseMove(UINT nFlags, _Point point){
 			}
 		return;
 		}
-
-//	ESChildControl* pControl = ChildControlByPoint(point);
+    
 	ESChildControl* pControl = m_layerMan.GetTopMostChildByPoint(point);
 	if( m_pControlUnderCursor != pControl ){
 		if( pControl ){
@@ -1068,7 +1067,6 @@ MercuryBaseView::OnMouseMove(UINT nFlags, _Point point){
 			DeactivateTooltip();
 			m_pControlUnderCursor = NULL;
 			}
-		//CView::OnMouseMove(nFlags, point);
 		return;
 		}
 	else{
@@ -1084,7 +1082,6 @@ MercuryBaseView::OnMouseMove(UINT nFlags, _Point point){
 			return;
 			}
 		}
-	//CView::OnMouseMove(nFlags, point);
 	}
 
 BOOL
@@ -1181,7 +1178,6 @@ MercuryBaseView::OnLButtonDown(UINT nFlags, _Point point){
     
 	// Designer mode. {{
 	if( m_bDesignerMode ){
-//		m_pControlUnderCursor	= ChildControlByPoint(point);
 		m_pControlUnderCursor	= m_layerMan.GetTopMostChildByPoint(point);
 
 		// MouseUpDown events allowed in designer mode.
@@ -1406,7 +1402,6 @@ MercuryBaseView::SetTitle(){
 void
 MercuryBaseView::Setup(){
 	ESFrameBase::Setup();
-
 
 //	m_fHeightAndWidthRatio = 0.689f;
 //	LoadFromDesignFile(_T("design\\table_base.des"), false, _T(""), false, m_szDefault, m_ptSetupPos.x, m_ptSetupPos.y);

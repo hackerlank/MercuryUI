@@ -49,27 +49,12 @@
         NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:self userInfo:nil];
         [self addTrackingArea: area];
         
-        /*
-        ESChildControlInfo* i1 = new ESChildControlInfo();
-        i1->m_nId = 10000;
-        i1->m_sName = _T("Name");
-        
-        EnumerableObject<ESChildControlInfo> arrTest;
-        arrTest.CreateVariableIndex(_T("Id"), &Serializable::Compare_Int32);
-        arrTest.CreateVariableIndex(_T("Name"), &Serializable::Compare_String);
-        arrTest.Add(i1);
-        
-        int idLookup = 10000;
-        arrTest.FindOneVariable(_T("Id"), &idLookup);
-        */
-        
         //FILE* file = fopen(_T("/Volumes/OSX-DATA/Dev/ESPoker_06.01.2014/_bin/ESPokerClient_Debug/design/Lobby.des"), "r+b");
         _Rect rcDraw(rcView.origin.x, rcView.origin.y, (rcView.origin.x + rcView.size.width), (rcView.origin.y + rcView.size.height));
         _pMercuryView = new MercuryBaseView();
-        _pMercuryView->SetHWND(wnd);
+        _pMercuryView->SetHWND(self);
         
-        MercuryBaseView::Gett();
-        
+        /*
         _string arrCOntrolNames[] = {
             _T("ESChildControlLabel"),
             _T("ESChildControlImage"),
@@ -92,13 +77,12 @@
         for(int i=0; i<sizeof(arrCOntrolNames)/sizeof(_string); i++){
             ESChildControl* p = ESChildControl::GetChildClassInstance(arrCOntrolNames[i]);
             p->GetVariableInfo(_T("A"));
-        }
+        }*/
                 
         _string designFile = _T("design/Lobby.des");
         //_string designFile = _T("/Volumes/OSX/Users/ZqrTalent/Desktop/Dev/design/Lobby.des");
         //_string designFile = _T("/Volumes/OSX-DATA/Dev/ESPoker_06.01.2014/_bin/ESPokerClient_Debug/design/LoginDialog.des");
         _pMercuryView->LoadFromDesignFile(designFile);
-        
         [self setNeedsDisplay:YES];
     }
 }
@@ -107,8 +91,9 @@
 {
     if( _pMercuryView != NULL )
     {
-        _pMercuryView->OnSize(0, (int)frameSize.width, (int)frameSize.height);
-        [self setNeedsDisplay:YES];
+        //_pMercuryView->OnSize(0, (int)frameSize.width, (int)frameSize.height);
+        _pMercuryView->OnSize(0, (int)[self frame].size.width, (int)[self frame].size.height);
+        [self setNeedsDisplay:YES]; // Redraw view
     }
     else
     {

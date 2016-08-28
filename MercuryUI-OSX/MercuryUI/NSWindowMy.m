@@ -23,7 +23,6 @@
 -(void)keyDown:(NSEvent *)theEvent
 {
     [super keyDown:theEvent];
-    
     NSLog(@"event code %d", theEvent.keyCode);
 }
 
@@ -110,7 +109,6 @@
 -(NSSize)windowWillResize:(NSWindow *)sender toSize:(NSSize)frameSize
 {
     NSLog(@"resize event %f %f", frameSize.width, frameSize.height);
-    
     [((NSViewMy*)_contentView) resizeEvent:frameSize];
     
     return frameSize;

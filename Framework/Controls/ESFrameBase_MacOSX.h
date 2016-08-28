@@ -57,7 +57,7 @@ public:
 //	operator HWND		() const {return m_hWnd;};
 	bool				IsWindow				(){ return m_hWnd != nil; };
 	bool				IsWindowVisible			(){ return /*::IsWindowVisible(m_hWnd) ? true : */false; };
-    void				SetHWND					(NSWindow* pWindow){m_hWnd = pWindow;};
+    void				SetHWND					(HWND hWnd){m_hWnd = hWnd;};
 
 	void				ShowWindow				(int nCmd);
 	void				SetActiveWindow			();
@@ -155,7 +155,7 @@ public:
 
 protected:
 //	HICON					m_hIcon;
-	NSWindow*				m_hWnd;
+	HWND                    m_hWnd;
 	_string                 m_sWndClass;			// Window class name.
 
 	ESFrameBase*			m_pOwner;

@@ -211,7 +211,7 @@ typedef CGImageRef ImageDef;
 // COLOR reference ARGB - pixel per byte (4 bytes)
 #define COLORREF int
 
-#define HWND int
+#define HWND NSView*
 
 #ifndef _min
 #define _min(a,b) (a>b)?b:a

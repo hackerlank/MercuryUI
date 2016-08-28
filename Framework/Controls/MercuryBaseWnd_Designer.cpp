@@ -1284,8 +1284,7 @@ MercuryBaseView::LoadFromDesignFile(_string sDesignFile, bool bAddControls /*= f
 	int		nDataSize	= 0;
 	if( !Path::ReadFileContent(sDesignFile, lpFileData, nDataSize) )
 		return false; // File reading error !!!
-
-    int nMemSize = sizeof(GrowableMemory);
+    
 	GrowableMemory mem;
 	mem.SetReadonlyBuffer(lpFileData, nDataSize);
 

@@ -341,7 +341,7 @@ _DC::ExtTextOut(int x, int y, UINT options, LPCRECTDef lprect, const char* pszTe
     NSString* drawStr = [NSString stringWithUTF8String:pszText];
     //NSSize sz1 = [drawStr sizeWithAttributes:_fontAttributes];
     //CGContextSetTextPosition([_context CGContext], (CGFloat)lprect->left, (CGFloat)lprect->top);
-    [drawStr drawAtPoint:CGPointMake(lprect->left, lprect->top) withAttributes:_fontAttributes];
+    [drawStr drawAtPoint:CGPointMake(x, y) withAttributes:_fontAttributes];
     //[drawStr drawInRect:CGRectMake(lprect->left, lprect->top, (lprect->right - lprect->left), (lprect->bottom - lprect->top)) withAttributes:_fontAttributes];
     [NSGraphicsContext restoreGraphicsState];
     return FALSE;
@@ -363,8 +363,6 @@ _DC::ExtTextOutW(int x, int y, UINT options, LPCRECTDef lprect, const wchar_t* l
     NSString* drawStr = [NSString stringWithCString:(const char*)lpString encoding: NSUTF8StringEncoding];
     //NSSize sz1 = [drawStr sizeWithAttributes:_fontAttributes];
     [drawStr drawInRect:CGRectMake(lprect->left, lprect->top, (lprect->right - lprect->left), (lprect->bottom - lprect->top)) withAttributes:_fontAttributes];
-    
-   
     [NSGraphicsContext restoreGraphicsState];
     return FALSE;
 	}

@@ -415,20 +415,20 @@ ESFrameBase::FromHandle(HWND hWnd){
 	ASSERT(pArrWnds);
 	ESFrameBase* pResult = NULL;
 	int nIndex = -1;
-	pArrWnds->GetData((void*)hWnd, (void*&)pResult, nIndex);
+	pArrWnds->GetData((__bridge void*)hWnd, (void*&)pResult, nIndex);
 	return pResult;
 	}
 
 void
 ESFrameBase::Invalidate(BOOL eraseBkgnd){
-//	if( m_hWnd )
-//		::InvalidateRect(m_hWnd, NULL, eraseBkgnd);
+    if( m_hWnd )
+        [m_hWnd setNeedsLayout:YES];
 	}
 
 void
 ESFrameBase::InvalidateRect(LPCRECTDef lpRect, BOOL eraseBkgnd){
-//	if( m_hWnd )
-//		::InvalidateRect(m_hWnd, lpRect, eraseBkgnd);
+	if( m_hWnd )
+        [m_hWnd setNeedsDisplayInRect:CGRectMake(lpRect->left, lpRect->top, lpRect->right - lpRect->left, lpRect->bottom - lpRect->top)];
 	}
 
 bool
@@ -436,8 +436,8 @@ ESFrameBase::AttachWND(HWND hWnd, ESFrameBase* pFrame){
 	AutoSortedArray* pArrWnds = GetArrayWNDAttachments();
 	ASSERT(pArrWnds);
 	bool bRet = false;
-	if( pArrWnds->IndexOf((void*)hWnd) == -1 ){
-		pArrWnds->Add((void*)hWnd, (void*)pFrame);
+	if( pArrWnds->IndexOf((__bridge void*)hWnd) == -1 ){
+		pArrWnds->Add((__bridge void*)hWnd, (void*)pFrame);
 		bRet = true;
 		}
 	else{
@@ -453,7 +453,7 @@ ESFrameBase::DetachWND(HWND hWnd){
 	ASSERT(pArrWnds);
 	ESFrameBase* pResult = NULL;
 	int nIndex = -1;
-	pArrWnds->GetData((void*)hWnd, (void*&)pResult, nIndex);
+	pArrWnds->GetData((__bridge void*)hWnd, (void*&)pResult, nIndex);
 	if( nIndex > -1 )
 		pArrWnds->Delete(nIndex);
 	return pResult;
