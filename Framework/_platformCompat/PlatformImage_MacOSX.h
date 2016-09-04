@@ -76,7 +76,7 @@ public:
 	};
 
 	operator ImageDef						(){ return [image_ CGImage]; };
-	bool			Attach					(ImageDef image);
+	bool			Attach					(ImageDef image, bool makeImageUpsideDown = false);
 	ImageDef		Detach					();
 	void			Destroy					();
 
@@ -122,7 +122,8 @@ public:
 	BOOL			MultiplyBlendImageBpp32	(COLORREF crBlend);
 	BOOL			Rotate90Bitmap32bpp		(_Image& imageRotated);
 	BOOL			Rotate90Bitmap32bpp		();
-
+    BOOL            MakeUpsideDown          ();
+    
 	BOOL			DrawImage32bpp_Omitborder(_DC* pDC, _Rect rcDestDC, _Rect rcClipDC, _Rect rcOmitBorder, BOOL bAlpha = TRUE, BOOL bSkipMiddleCenterPart = FALSE);
 
 	// Region from bitmap.

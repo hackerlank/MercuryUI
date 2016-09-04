@@ -1316,7 +1316,12 @@ MercuryBaseView::LoadFromDesignFile(_string sDesignFile, bool bAddControls /*= f
 			// Copy objects.
 			designInfo.Copy(&m_designInfo);
 			info.Copy(&m_info);
-
+            
+            
+            // Temp.
+            //m_info.m_sizeBoxImage.Detach();
+            //m_info.m_sizeBoxImage.Attach(info.m_sizeBoxImage.Detach());
+            
 			if( (szDefaultWindowSize.cx >= m_info.m_szMin.cx && szDefaultWindowSize.cx <= m_info.m_szMax.cx) &&
 				(szDefaultWindowSize.cy >= m_info.m_szMin.cy && szDefaultWindowSize.cy <= m_info.m_szMax.cy) ){
 				if( m_bAllowZooming ){

@@ -211,6 +211,15 @@ typedef CGImageRef ImageDef;
 // COLOR reference ARGB - pixel per byte (4 bytes)
 #define COLORREF int
 
+struct RGBQUAD
+{
+    #pragma pack(1)
+    BYTE rgbBlue;
+    BYTE rgbGreen;
+    BYTE rgbRed;
+    BYTE rgbReserved;
+};
+
 #define HWND NSView*
 
 #ifndef _min

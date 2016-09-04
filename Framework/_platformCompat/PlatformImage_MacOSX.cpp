@@ -22,7 +22,7 @@ _Image::~_Image(){
 	}
 
 bool
-_Image::Attach(ImageDef image){
+_Image::Attach(ImageDef image, bool makeImageUpsideDown /*= false*/){
 	ASSERT(IsNull());
 	if( !IsNull() || !image )
 		return false;
@@ -37,6 +37,24 @@ _Image::Attach(ImageDef image){
     }
     return false;
 	}
+
+BOOL
+_Image::MakeUpsideDown(){
+    if(IsNull())
+        return FALSE;
+    
+    BYTE* pRowData = new BYTE[bmpInfo_.bmWidthBytes];
+    for (int y=0; y<((int)bmpInfo_.bmHeight/2); y++) {
+        BYTE* topRow = (BYTE*)(((UINT_PTR)bmpInfo_.bmBits) + bmpInfo_.bmWidthBytes*y);
+        BYTE* bottomRow = (BYTE*)(((UINT_PTR)bmpInfo_.bmBits) + bmpInfo_.bmWidthBytes*(bmpInfo_.bmHeight - y - 1));
+        
+        memcpy(pRowData, topRow, bmpInfo_.bmWidthBytes);
+        memcpy(topRow, bottomRow, bmpInfo_.bmWidthBytes);
+        memcpy(bottomRow, pRowData, bmpInfo_.bmWidthBytes);
+    }
+    delete [] pRowData;
+    return TRUE;
+}
 
 ImageDef
 _Image::Detach(){
@@ -138,17 +156,10 @@ BOOL
 _Image::LoadFromBinary(LongBinary* pBinary){
     if( !IsNull() || !pBinary || !pBinary->GetBinarySize() )
         return FALSE;
-    
     NSData* pData = [[NSData alloc] initWithBytesNoCopy:pBinary->LockMemory() length:pBinary->GetBinarySize()];
     NSBitmapImageRep* image = [[NSBitmapImageRep alloc] initWithData:pData];
-    
-    if( image != NULL ){
-        image_ = image;
-        bmpInfo_.bmBitsPixel = image_.bitsPerPixel;
-        bmpInfo_.bmWidthBytes = (int)image_.bytesPerRow;
-        bmpInfo_.bmWidth = (int)image_.size.width;
-        bmpInfo_.bmHeight = (int)image_.size.height;
-        bmpInfo_.bmBits = image.bitmapData;
+    if(Attach([image CGImage])){
+        MakeUpsideDown();
         return TRUE;
         }
     return FALSE;
@@ -215,13 +226,18 @@ _Image::LoadImage(const _string sImageFile, int nWidth /*= -1*/, int nHeight /*=
         return scaledImage;
         */
         
-        NSRect nsRect = NSMakeRect(0.0, 0.0, [nsImage size].width, [nsImage size].height);
-        CGImageRef imageRef = [nsImage CGImageForProposedRect:&nsRect context:nil hints:nil];
+        // Core graphics image from NSImage.
+        CGImageRef imageRef = [nsImage CGImageForProposedRect:nil context:nil hints:nil];
         if(imageRef == nil)
             return nullptr;
         
         pImage = new _Image();
         pImage->Attach(imageRef);
+        /*
+         Core Graphics uses lower left coords while UIKit(NSImage) upper left and to fix the problem with upsidedown drawn images
+         we have to make image upside down manually.
+         */
+        pImage->MakeUpsideDown();
         }
                            
 	return pImage;
@@ -369,7 +385,6 @@ _Image::CreateDIBBitmap(int nBPP, UINT* pColorTable, UINT nWidth, UINT nHeight, 
     ImageDef image = CGImageCreate(nWidth, nHeight, 8, nBPP, bytesPerRow, colorSpaceRef, bitmapInfo, dataProviderRef,
                                    NULL, true, kCGRenderingIntentDefault);
     
-    
     CGDataProviderRelease(dataProviderRef);
     CGColorSpaceRelease(colorSpaceRef);
     
@@ -388,81 +403,68 @@ _Image::CreateDIBBitmap(int nBPP, UINT* pColorTable, UINT nWidth, UINT nHeight, 
 
 BOOL
 _Image::CreateDIBBitmap(int nBPP, COLORREF crFill, UINT nWidth, UINT nHeight, BITMAP* pBmp /*= NULL*/, _DC* pDCCompatible /*= NULL*/){
-    /*
 	if( !IsNull() ){
 		ASSERT(FALSE);
 		return FALSE;
 		}
-
-	BITMAPINFOHEADER	bmpInfo32;
-	memset(&bmpInfo32, 0, sizeof(BITMAPINFOHEADER));
-	bmpInfo32.biBitCount		= nBPP;
-	bmpInfo32.biCompression		= BI_RGB;
-	bmpInfo32.biPlanes			= 1;
-	bmpInfo32.biHeight			= nHeight;
-	bmpInfo32.biSize			= sizeof(BITMAPINFOHEADER);
-	bmpInfo32.biWidth			= nWidth;
-
-	UINT*	lpMap	= NULL;
-	HBITMAP	hDib	= NULL;
-	
-	if( !pDCCompatible ){
-		HDC	memDC	= ::CreateCompatibleDC(NULL);
-		hDib		= ::CreateDIBSection(memDC, (BITMAPINFO*)&bmpInfo32, DIB_RGB_COLORS, (void**)&lpMap, NULL, 0);
-		ASSERT( lpMap );
-		::DeleteDC(memDC);
-		}
-	else{
-		hDib	= ::CreateDIBSection(*pDCCompatible, (BITMAPINFO*)&bmpInfo32, DIB_RGB_COLORS, (void**)&lpMap, NULL, 0);
-		ASSERT( lpMap );
-		}
-
-	if( crFill != 0 ){
-		int			nLoop	= 0, nIndex = 0, nCount		= nWidth*nHeight;
-		nBPP				/= 8;
-
-		BYTE btRed			= crFill&0xFF;
-		BYTE btGreen		= (crFill&0xFF00)>>8;
-		BYTE btBlue			= (crFill&0xFF0000)>>16;
-
-		BITMAP bmImage;
-		::GetObject(hDib, sizeof(BITMAP), &bmImage);
-
-		for(int y=0; y<nHeight; y++){
-			BYTE* lpBits = &((BYTE*)lpMap)[nIndex];
-			for(int x=0; x<nWidth; x++){
-				lpBits[0]	= btBlue; // Blue
-				lpBits[1]	= btGreen; // Green
-				lpBits[2]	= btRed; // Red
-				lpBits		= &lpBits[nBPP];
-				}
-			nIndex += bmImage.bmWidthBytes;
-			}
-		}
-
-	if( pBmp )
-		::GetObject(hDib, sizeof(BITMAP), pBmp);
-
-	Attach(hDib);*/
-	return 1;
+    
+    int bytesPerRow = (nBPP/8)*(nWidth);
+    // Align by 4 bytes
+    if( nBPP != 32 )
+        bytesPerRow += bytesPerRow%4;
+    
+    // Create color table data and fill pixels with specified color.
+    BYTE* pColorTable = (BYTE*)malloc(bytesPerRow*nHeight);
+    int nBytesPerPixel	= nBPP / 8;
+    BYTE btRed			= crFill&0xFF;
+    BYTE btGreen		= (crFill&0xFF00)>>8;
+    BYTE btBlue			= (crFill&0xFF0000)>>16;
+    
+    for(int y=0; y<nHeight; y++){
+        BYTE* lpBits = &((BYTE*)pColorTable)[bytesPerRow*y];
+        for(int x=0; x<nWidth; x++){
+            lpBits[0]	= btBlue; // Blue
+            lpBits[1]	= btGreen; // Green
+            lpBits[2]	= btRed; // Red
+            lpBits[3]   = 0; // Alpha
+            lpBits		= &lpBits[nBytesPerPixel];
+        }
+    }
+    
+    CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+    CGDataProviderRef dataProviderRef = CGDataProviderCreateWithData(NULL, pColorTable, (bytesPerRow*nHeight), NULL);
+    CGBitmapInfo bitmapInfo = kCGImageAlphaNoneSkipLast;
+    
+    ImageDef image = CGImageCreate(nWidth, nHeight, 8, nBPP, bytesPerRow, colorSpaceRef, bitmapInfo, dataProviderRef,
+                                   NULL, true, kCGRenderingIntentDefault);
+    
+    CGDataProviderRelease(dataProviderRef);
+    CGColorSpaceRelease(colorSpaceRef);
+    free(pColorTable);
+    
+    if( Attach(image) ){
+        if( pBmp ){
+            memcpy(pBmp, &bmpInfo_, sizeof(BITMAP));
+        }
+        CGImageRelease(image);
+        return TRUE;
+    }
+    
+    if(image != nullptr)
+        CGImageRelease(image);
+    return FALSE;
 	}
 
 BOOL
-_Image::GetImageFromImage(_Rect rcDest, _Image& image){/*
+_Image::GetImageFromImage(_Rect rcDest, _Image& image){
 	if( IsNull() || rcDest.IsRectEmpty() )
 		return FALSE;
-	
-	BITMAP bmImage;
-	::GetObject(image_, sizeof(BITMAP), &bmImage);
-
-	Image bmpImage;
-	if( !bmpImage.CreateDIBBitmap((int)bmImage.bmBitsPixel, RGB(0, 0, 0), rcDest.Width(), rcDest.Height()) )
+    
+    _Image bmpImage;
+	if( !bmpImage.CreateDIBBitmap((int)bmpInfo_.bmBitsPixel, RGB(0, 0, 0), rcDest.Width(), rcDest.Height()) )
 		return FALSE;
-
-	BITMAP bmImageDest;
-	::GetObject(bmpImage, sizeof(BITMAP), &bmImageDest);
-	bmpImage.BitmapOnBitmap(0, 0, image_, rcDest.left, rcDest.top, bmImage.bmWidth, bmImage.bmHeight, rcDest.Width(), rcDest.Height()); 
-	image.Attach((HBITMAP)bmpImage.Detach());*/
+	bmpImage.BitmapOnBitmap(0, 0, this, rcDest.left, rcDest.top, bmpImage.GetWidth(), bmpImage.GetHeight(), rcDest.Width(), rcDest.Height(), FALSE);
+	image.Attach(bmpImage.Detach());
 	return TRUE;
 	}
 
@@ -858,8 +860,9 @@ _Image::CopyImage(_Image* pCopyInto){
 	if( !pCopyInto || IsNull() )
 		return FALSE;
 	pCopyInto->Destroy();
-    return pCopyInto->Attach([image_ CGImage]);
-	//return pCopyInto->CreateDIBBitmap(GetBPP(),  (UINT*)this->bmpInfo_.bmBits, GetWidth(), GetHeight());
+    //return GetImageFromImage(_Rect(0, 0, GetWidth(), GetHeight()), *pCopyInto);
+    //return pCopyInto->Attach([image_ CGImage]);
+    return pCopyInto->CreateDIBBitmap(GetBPP(), (UINT*)this->bmpInfo_.bmBits, GetWidth(), GetHeight());
 	}
 
 BOOL
@@ -990,18 +993,8 @@ _Image::CombineTwo32bppImages(ImageDef hImage1, ImageDef hImage2){
 
 BOOL
 _Image::RenderImage_OmitBorder(_DC* pDC, const _Rect rcClipDestDC, const _Rect rcDestDC, _Rect rcOmitBorder, BOOL bAlpha /*= TRUE*/, BOOL bSkipMiddleCenterPart /*= FALSE*/){
-    
     if( !pDC || IsNull() )
 		return FALSE;
-/*
-	int		nImageWidth		= GetWidth();
-	int		nImageHeight	= GetHeight();
-
-	int		nSrcImageX		= (rcClipDestDC.left - rcDestDC.left);
-	int		nSrcImageY		= (rcClipDestDC.top - rcDestDC.top);
-	int		nImageDrawCX	= rcClipDestDC.Width();
-	int		nImageDrawCY	= rcClipDestDC.Height();
-*/
 	return DrawImage32bpp_Omitborder(pDC, rcDestDC, rcClipDestDC, &rcOmitBorder, bAlpha, bSkipMiddleCenterPart); 
 	}
 
@@ -1015,7 +1008,7 @@ _Image::RenderImage(_DC* pDC, const _Rect rcClipDestDC, const _Rect rcDestDC, bo
                                (float)(rcClipDestDC.right-rcClipDestDC.left), (float)(rcClipDestDC.bottom-rcClipDestDC.top));
         DCDef dc = *pDC;
         CGContextSaveGState(dc);
-        //CGContextTranslateCTM(dc, 0, image_.size.height);
+        //CGContextTranslateCTM(dc, 0, 0);
         //CGContextScaleCTM(dc, 1.0, -1.0);
         if(bScale)
         {
@@ -1072,16 +1065,6 @@ _Image::MultiplyBlendImageBpp32(COLORREF crBlend){
     memcpy(&bmImage, &bmpInfo_, sizeof(BITMAP));
 	if(  bmImage.bmBits == nullptr)
 		return FALSE;
-    
-    
-    struct RGBQUAD
-    {
-        #pragma pack(1)
-        BYTE rgbBlue;
-        BYTE rgbGreen;
-        BYTE rgbRed;
-        BYTE rgbReserved;
-    };
 
 	RGBQUAD	 rgbQuadBlend =
 		{
@@ -1122,26 +1105,23 @@ _Image::Rotate90Bitmap32bpp(){
 
 BOOL
 _Image::Rotate90Bitmap32bpp(_Image& imageRotated){
-    /*
 	if( IsNull() )
 		return FALSE;
-
-	BITMAP bmp;
-	GetObject(image_, sizeof(BITMAP), &bmp);
-	if( bmp.bmBits == NULL || bmp.bmBitsPixel != 32 )
+    
+	if( bmpInfo_.bmBits == NULL || bmpInfo_.bmBitsPixel != 32 )
 		return FALSE;
 
-	Image resultImage;
+	_Image resultImage;
 	BITMAP bmpRotated;
-	if( !resultImage.CreateDIBBitmap(bmp.bmBitsPixel, RGB(0, 0, 0), bmp.bmHeight, bmp.bmWidth, &bmpRotated) )
+	if( !resultImage.CreateDIBBitmap(bmpInfo_.bmBitsPixel, RGB(0, 0, 0), bmpInfo_.bmHeight, bmpInfo_.bmWidth, &bmpRotated) )
 		return FALSE;
 
 	RGBQUAD* pixelRotated	= (RGBQUAD*)bmpRotated.bmBits;
-	RGBQUAD* pixelSrc		= (RGBQUAD*)bmp.bmBits;
+	RGBQUAD* pixelSrc		= (RGBQUAD*)bmpInfo_.bmBits;
 
 	for( int y=0; y<bmpRotated.bmHeight; y++ ){
 		for( int x=0; x<bmpRotated.bmWidth; x++ ){
-			pixelSrc = (RGBQUAD*)(((long)bmp.bmBits) + (x)*bmp.bmWidthBytes + y*sizeof(RGBQUAD));
+			pixelSrc = (RGBQUAD*)(((long)bmpInfo_.bmBits) + (x)*bmpInfo_.bmWidthBytes + y*sizeof(RGBQUAD));
 
 			pixelRotated->rgbBlue		= pixelSrc->rgbBlue;
 			pixelRotated->rgbGreen		= pixelSrc->rgbGreen;
@@ -1151,7 +1131,7 @@ _Image::Rotate90Bitmap32bpp(_Image& imageRotated){
 			pixelRotated ++;
 			}
 		}
-	imageRotated.Attach((ImageDef)resultImage.Detach());*/
+	imageRotated.Attach((ImageDef)resultImage.Detach());
 	return TRUE;
 	}
 
@@ -1263,6 +1243,7 @@ _Image::DrawImage32bpp_Omitborder(_DC* pDC, _Rect rcDestDC, _Rect rcClipDC, _Rec
 
 RGNDef
 _Image::GetBitmap32bppRgnByAlphaChannel(BYTE btMinAlpha){
+    return NULL;
     /*
 	if( IsNull() )
 		return NULL;
@@ -1333,7 +1314,6 @@ _Image::GetBitmap32bppRgnByAlphaChannel(BYTE btMinAlpha){
 	DeleteObject(hRgnBmp);
 	// }}
 	return hRgnDest;*/
-    return 0;
 	}
 
 BOOL

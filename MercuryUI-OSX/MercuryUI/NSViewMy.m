@@ -158,6 +158,16 @@
         _pMercuryView->OnPaint(context, rcDraw);
     }
     
+    CGContextRef context = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+    
+    /*
+    NSString* imageFile = @"/Users/ZqrTalent/Library/Developer/Xcode/DerivedData/MercuryUI-ckaqtaasuzdoasgxjirrmdvjynxf/Build/Products/Debug/design/images/logo.png";
+    NSImage* nsImage = [[NSImage alloc] initWithContentsOfFile:imageFile];
+    NSRect nsRect = NSMakeRect(0.0, 0.0, [nsImage size].width, [nsImage size].height);
+    CGImageRef imageRef = [nsImage CGImageForProposedRect:nil context:[NSGraphicsContext currentContext] hints:nil];
+    CGContextDrawImage(context, nsRect, imageRef);
+    */
+    
     return;
     if(testImage_.IsNull())
     {
@@ -200,7 +210,7 @@
     
     //[[NSBitmapImageRep alloc] initWithCGImage:image]
     
-    CGContextRef context = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+    //CGContextRef context = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
     //CGContextDrawImage(context, CGRectMake(0.0, 0.0, g_szVScrollThumbImg.cx, g_szVScrollThumbImg.cy), testImage);
     //CGContextDrawImage(context, CGRectMake(0.0, 0.0, g_szVScrollThumbImg.cx, g_szVScrollThumbImg.cy), [testImageRep CGImage]);
     
