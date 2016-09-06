@@ -170,6 +170,10 @@ typedef struct tagBITMAP {
 #define VK_LSHIFT 7
 #define VK_RSHIFT 8
 
+#define MK_CONTROL 1
+#define MK_SHIFT 2
+#define MK_COMMAND 3
+
 // Event synchronization
 #define INFINITE -1
 #define WAIT_OBJECT_0 0

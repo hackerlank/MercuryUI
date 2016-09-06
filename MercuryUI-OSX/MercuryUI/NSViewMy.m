@@ -33,26 +33,31 @@
 -(id)initWithFrame:(NSRect)frameRect
 {
     self = [super initWithFrame:frameRect];
-    
-    // Code here.
-    _pMercuryView = new MercuryBaseView();
     return self;
+}
+
+-(void)viewDidMoveToWindow
+{
+    [super viewDidMoveToWindow];
+    
+    // Initialize mercury view.
+    [self initializeMercuryView:CGRectMake(0.0, 0.0, 0.0, 0.0) wnd:nil];
 }
 
 -(void)initializeMercuryView:(NSRect)rcView wnd:(NSWindow*)wnd
 {
     if( _pMercuryView == NULL )
     {
-        NSTrackingAreaOptions options = (NSTrackingActiveAlways | NSTrackingInVisibleRect |
-                                         NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved);
+        NSTrackingAreaOptions options = (NSTrackingActiveAlways | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved);
         
         NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:self userInfo:nil];
         [self addTrackingArea: area];
         
         //FILE* file = fopen(_T("/Volumes/OSX-DATA/Dev/ESPoker_06.01.2014/_bin/ESPokerClient_Debug/design/Lobby.des"), "r+b");
-        _Rect rcDraw(rcView.origin.x, rcView.origin.y, (rcView.origin.x + rcView.size.width), (rcView.origin.y + rcView.size.height));
+        //_Rect rcDraw(rcView.origin.x, rcView.origin.y, (rcView.origin.x + rcView.size.width), (rcView.origin.y + rcView.size.height));
         _pMercuryView = new MercuryBaseView();
         _pMercuryView->SetHWND(self);
+        _pMercuryView->SetDesignerMode(true);
         
         /*
         _string arrCOntrolNames[] = {
@@ -111,9 +116,20 @@
     [super mouseMoved:theEvent];
     if(_pMercuryView != NULL)
     {
+        int nFlags = 0;
+        NSEventModifierFlags flags = [theEvent modifierFlags];
+        if( (flags & NSControlKeyMask) == NSControlKeyMask)
+            nFlags |= MK_CONTROL;
+        else
+            if( (flags & NSCommandKeyMask) == NSCommandKeyMask)
+                nFlags |= MK_COMMAND;
+            else
+                if( (flags & NSShiftKeyMask) == NSShiftKeyMask)
+                    nFlags |= MK_SHIFT;
+        
         NSPoint pt = [theEvent locationInWindow];
         NSPoint ptView = [self convertPoint:pt toView:self];
-        _pMercuryView->OnMouseMove(0, _Point(ptView.x, [self bounds].size.height - ptView.y));
+        _pMercuryView->OnMouseMove(nFlags, _Point(ptView.x, [self bounds].size.height - ptView.y));
         NSLog(@"mouse moved1");
     }
 }
@@ -130,9 +146,20 @@
     [super mouseDown:theEvent];
     if(_pMercuryView != NULL)
     {
+        int nFlags = 0;
+        NSEventModifierFlags flags = [theEvent modifierFlags];
+        if( (flags & NSControlKeyMask) == NSControlKeyMask)
+            nFlags |= MK_CONTROL;
+        else
+            if( (flags & NSCommandKeyMask) == NSCommandKeyMask)
+                nFlags |= MK_COMMAND;
+            else
+                if( (flags & NSShiftKeyMask) == NSShiftKeyMask)
+                    nFlags |= MK_SHIFT;
+        
         NSPoint pt = [theEvent locationInWindow];
         NSPoint ptView = [self convertPoint:pt toView:self];
-        _pMercuryView->OnLButtonDown(0, _Point(ptView.x, [self bounds].size.height - ptView.y));
+        _pMercuryView->OnLButtonDown(nFlags, _Point(ptView.x, [self bounds].size.height - ptView.y));
     }
 }
 
@@ -151,14 +178,12 @@
 {
     NSLog(@"redraw %f %f %f %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
     
+    CGContextRef context = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
     if( _pMercuryView != NULL )
     {
-        CGContextRef context = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
         _Rect rcDraw(rect.origin.x, rect.origin.y, (rect.origin.x + rect.size.width), (rect.origin.y + rect.size.height));
         _pMercuryView->OnPaint(context, rcDraw);
     }
-    
-    CGContextRef context = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
     
     /*
     NSString* imageFile = @"/Users/ZqrTalent/Library/Developer/Xcode/DerivedData/MercuryUI-ckaqtaasuzdoasgxjirrmdvjynxf/Build/Products/Debug/design/images/logo.png";

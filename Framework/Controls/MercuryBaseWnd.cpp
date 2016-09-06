@@ -1193,8 +1193,8 @@ MercuryBaseView::OnLButtonDown(UINT nFlags, _Point point){
 			return;
 			}
 
-		//if( (nFlags&MK_CONTROL) != MK_CONTROL )
-		//	ClearSelections(true);
+		if( (nFlags&MK_CONTROL) != MK_CONTROL )
+			ClearSelections(true);
 		if( AddInSelectedList(m_pControlUnderCursor) )
 			m_pControlUnderCursor->Redraw();
 
