@@ -58,6 +58,7 @@ public:
 	bool				IsWindow				(){ return m_hWnd != nil; };
 	bool				IsWindowVisible			(){ return /*::IsWindowVisible(m_hWnd) ? true : */false; };
     void				SetHWND					(HWND hWnd){m_hWnd = hWnd;};
+    HWND                GetHWND                 (){ return m_hWnd; };
 
 	void				ShowWindow				(int nCmd);
 	void				SetActiveWindow			();

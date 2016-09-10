@@ -85,6 +85,7 @@
         }*/
                 
         _string designFile = _T("design/Lobby.des");
+        designFile = _T("design/TournamentLobby.des");
         //_string designFile = _T("/Volumes/OSX/Users/ZqrTalent/Desktop/Dev/design/Lobby.des");
         //_string designFile = _T("/Volumes/OSX-DATA/Dev/ESPoker_06.01.2014/_bin/ESPokerClient_Debug/design/LoginDialog.des");
         _pMercuryView->LoadFromDesignFile(designFile);
@@ -130,14 +131,21 @@
         NSPoint pt = [theEvent locationInWindow];
         NSPoint ptView = [self convertPoint:pt toView:self];
         _pMercuryView->OnMouseMove(nFlags, _Point(ptView.x, [self bounds].size.height - ptView.y));
-        NSLog(@"mouse moved1");
+        NSLog(@"mouse moved1 - buttonNumber %ld", (long)[theEvent subtype]);
     }
+    
 }
 
 -(void)mouseDragged:(NSEvent *)theEvent
 {
     [super mouseDragged:theEvent];
-    
+    if(_pMercuryView != NULL)
+    {
+        int nFlags = MK_LBUTTON;
+        NSPoint pt = [theEvent locationInWindow];
+        NSPoint ptView = [self convertPoint:pt toView:self];
+        _pMercuryView->OnMouseMove(nFlags, _Point(ptView.x, [self bounds].size.height - ptView.y));
+    }
     NSLog(@"mouse dragged");
 }
 

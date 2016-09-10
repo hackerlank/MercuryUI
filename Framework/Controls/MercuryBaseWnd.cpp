@@ -928,6 +928,11 @@ MercuryBaseView::OnSize(UINT nType, int cx, int cy){
 void
 MercuryBaseView::OnMouseMove(UINT nFlags, _Point point){
 	ESFrameBase::OnMouseMove(nFlags, point);
+    
+#ifdef __APPLE__
+    if( !OnSetCursor(0, 0, 0) )
+        _Cursor::SetCursor(_Cursor::Arrow);
+#endif
 
 	if( m_bDesignerMode ){
 		// Sizing undermouse control.
@@ -1086,58 +1091,54 @@ MercuryBaseView::OnMouseMove(UINT nFlags, _Point point){
 
 BOOL
 MercuryBaseView::OnSetCursor(HWND hWnd, UINT nHitTest, UINT message){
-    /*
 	// Designer mode. {{
 	if( m_bDesignerMode ){
 		if( !m_pControlUnderCursor || !IsControlSelected(m_pControlUnderCursor) )
 			return 0;
 
 		if( m_bMoving ){
-			::SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+            _Cursor::SetCursor(_Cursor::SystemCursorType::SizeAll);
 			return 1;
 			}
 
 		int nHitTest = -1;
 		if( !m_bSizing ){
-			_Point pt;
-			::GetCursorPos(&pt);
-			::ScreenToClient(m_hWnd, &pt);
-
+            _Point pt           = _Cursor::GetCurrentPos(m_hWnd);
 			nHitTest			= m_pControlUnderCursor->_SizeBoxHitTest(pt);
 			m_nSizingHitTest	= nHitTest;
 			}
 		else
 			nHitTest			= m_nSizingHitTest;
 
-		if( nHitTest != -1 ){
+        if( nHitTest != -1 ){
 			switch( nHitTest ){
 				case ESChildControl::ChildControlHitTest::LeftCenter:
 				case ESChildControl::ChildControlHitTest::RightCenter:{
-					::SetCursor(LoadCursor(NULL, IDC_SIZEWE));
+                    _Cursor::SetCursor(_Cursor::SystemCursorType::SizeWE);
 					return 1;
 					}
 				case ESChildControl::ChildControlHitTest::MiddleTop:
 				case ESChildControl::ChildControlHitTest::MiddleBottom:{
-					::SetCursor(LoadCursor(NULL, IDC_SIZENS));
+                    _Cursor::SetCursor(_Cursor::SystemCursorType::SizeNS);
 					return 1;
 					}
 				case ESChildControl::ChildControlHitTest::LeftTop:
 				case ESChildControl::ChildControlHitTest::RightBottom:{
-					::SetCursor(LoadCursor(NULL, IDC_SIZENWSE));
+                    _Cursor::SetCursor(_Cursor::SystemCursorType::SizeNWSE);
 					return 1;
 					}
 				case ESChildControl::ChildControlHitTest::RightTop:
 				case ESChildControl::ChildControlHitTest::LeftBottom:{
-					::SetCursor(LoadCursor(NULL, IDC_SIZENESW));
+                    _Cursor::SetCursor(_Cursor::SystemCursorType::SizeNESW);
 					return 1;
 					}
 				default:
-					::SetCursor(LoadCursor(NULL, IDC_ARROW));
+                    _Cursor::SetCursor(_Cursor::SystemCursorType::Arrow);
 				};
 			return 1;
 			}
 		else
-			return 1;
+			return 0;
 		}
 	// }}
 
@@ -1146,7 +1147,7 @@ MercuryBaseView::OnSetCursor(HWND hWnd, UINT nHitTest, UINT message){
 		if( bRet )
 			return 1;
 		}
-*/
+    
 	return ESFrameBase::OnSetCursor(hWnd, nHitTest, message);
 	}
 
@@ -1175,7 +1176,6 @@ MercuryBaseView::OnLButtonDown(UINT nFlags, _Point point){
 //	_Rect rcRedraw (point.x - 40, point.y - 40, point.x + 40, point.y + 40);
 //	RedrawRect(rcRedraw, 1);
     
-    
 	// Designer mode. {{
 	if( m_bDesignerMode ){
 		m_pControlUnderCursor	= m_layerMan.GetTopMostChildByPoint(point);
@@ -1193,8 +1193,13 @@ MercuryBaseView::OnLButtonDown(UINT nFlags, _Point point){
 			return;
 			}
 
-		if( (nFlags&MK_CONTROL) != MK_CONTROL )
-			ClearSelections(true);
+#ifdef __APPLE__
+		if( (nFlags&(MK_CONTROL|MK_COMMAND)) == 0 )
+#else
+        if( (nFlags&MK_CONTROL) != MK_CONTROL )
+#endif
+            ClearSelections(true);
+        
 		if( AddInSelectedList(m_pControlUnderCursor) )
 			m_pControlUnderCursor->Redraw();
 

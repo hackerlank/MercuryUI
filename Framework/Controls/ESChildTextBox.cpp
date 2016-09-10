@@ -542,11 +542,8 @@ ESChildTextBox::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClient){
 	
 	// Draw close box. {{
 	if( m_bCloseBox ){
-		_Point pt;
-		//GetCursorPos(&pt);
-		//::ScreenToClient(m_pOwner->GetHWND(), &pt);
-
-		_Image* pImageBox = m_pImageCloseBoxNormal;
+		_Point pt = _Cursor::GetCurrentPos(m_pOwner->GetHWND());
+        _Image* pImageBox = m_pImageCloseBoxNormal;
 		if( m_rcCloseBox.PtInRect(pt) ){
 			if( m_bMouseCaptured )
 				pImageBox = m_pImageCloseBoxPushed;
@@ -572,21 +569,16 @@ ESChildTextBox::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClient){
 
 BOOL	
 ESChildTextBox::OnSetCursor(HWND hWnd, UINT nHitTest, UINT message){
-    /*
 	if( !m_bCloseBox ){
-		::SetCursor(LoadCursor(NULL, IDC_IBEAM));
+        _Cursor::SetCursor(_Cursor::Beam);
 		return 1;
 		}
 
-	_Point pt;
-	::GetCursorPos(&pt);
-	::ScreenToClient(m_pOwner->GetHWND(), &pt);
-
-	if( m_rcCloseBox.PtInRect(pt) )
-		::SetCursor(LoadCursor(NULL, IDC_HAND));
+	_Point pt = _Cursor::GetCurrentPos(m_pOwner->GetHWND());
+    if( m_rcCloseBox.PtInRect(pt) )
+        _Cursor::SetCursor(_Cursor::Hand);
 	else
-		::SetCursor(LoadCursor(NULL, IDC_IBEAM));
-	*/
+		_Cursor::SetCursor(_Cursor::Beam);
     return 1;
 	}
 

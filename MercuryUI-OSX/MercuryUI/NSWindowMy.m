@@ -29,7 +29,6 @@
 -(void)mouseDown:(NSEvent *)theEvent
 {
     [super mouseDown:theEvent];
-    //[((NSViewMy*)_contentView) initializeMercuryView:self.frame wnd:self];
     NSLog(@"mouse down");
 }
 

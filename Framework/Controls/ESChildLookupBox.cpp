@@ -100,15 +100,12 @@ ESChildLookupBox::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClient){
 	}
 
 BOOL	
-ESChildLookupBox::OnSetCursor(HWND hWnd, UINT nHitTest, UINT message){/*
-	_Point pt;
-	::GetCursorPos(&pt);
-	ScreenToClient(*m_pOwner, &pt);
-	if( m_rcBoxButton.PtInRect(pt) ){
-		::SetCursor(LoadCursor(NULL, IDC_HAND));
-		return 1;
-		}*/
-
+ESChildLookupBox::OnSetCursor(HWND hWnd, UINT nHitTest, UINT message){
+    _Point pt = _Cursor::GetCurrentPos(m_pOwner->GetHWND());
+    if( m_rcBoxButton.PtInRect(pt) ){
+        _Cursor::SetCursor(_Cursor::Hand);
+        return 1;
+    }
 	return ESChildTextBox::OnSetCursor(hWnd, nHitTest, message);
 	}
 

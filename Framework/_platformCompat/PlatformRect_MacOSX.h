@@ -228,6 +228,27 @@ protected:
     
     static void UnionRect(RECTDef* pDest, const RECTDef* pSrc1, const RECTDef* pSrc2)
 	{
+        // When one of the rects is empty then as a result copy another rect.
+        if((pSrc1->right - pSrc1->left) <= 0 ||
+           (pSrc1->bottom - pSrc1->top) <= 0)
+        {
+            pDest->left = pSrc2->left;
+            pDest->right = pSrc2->right;
+            pDest->top = pSrc2->top;
+            pDest->bottom = pSrc2->bottom;
+            return;
+        }
+        
+        if((pSrc2->right - pSrc2->left) <= 0 ||
+           (pSrc2->bottom - pSrc2->top) <= 0)
+        {
+            pDest->left = pSrc1->left;
+            pDest->right = pSrc1->right;
+            pDest->top = pSrc1->top;
+            pDest->bottom = pSrc1->bottom;
+            return;
+        }
+        
         CGRect unionRect =  CGRectUnion(CGRectMake((pSrc1->left), (pSrc1->top), (pSrc1->right - pSrc1->left), (pSrc1->bottom - pSrc1->top)),
                                                    CGRectMake((pSrc2->left), (pSrc2->top), (pSrc2->right - pSrc2->left), (pSrc2->bottom - pSrc2->top)));
         

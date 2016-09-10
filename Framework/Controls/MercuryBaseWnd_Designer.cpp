@@ -944,8 +944,7 @@ MercuryBaseView::MoveSelectedControls(int nOffsetX, int nOffsetY){
 	_Rect rcClient;
 	GetClientRectMy(rcClient);
 
-	int		nLoop	= 0;
-	int		nCt		= m_arrSelectedControlIds.GetCount();
+	int		nLoop = 0,nCt		= m_arrSelectedControlIds.GetCount();
 	_Rect	rcBound(0, 0, 0, 0), rRectOld;
 	_Point	ptPos;
 
@@ -1114,11 +1113,8 @@ MercuryBaseView::GetSelectedControl(int nIndex){
 
 bool
 MercuryBaseView::AddNewControl(ESChildControl* pControlNew, ESChildControl* pParent /*= NULL*/){
-	_Point pt;
-	//::GetCursorPos(&pt);
-	//::ScreenToClient(GetHWND(), &pt);
-
-	_Size	szDefault	= ((ESChildControl*)pControlNew)->GetControlDefaultSize();
+    _Point pt = _Cursor::GetCurrentPos(m_hWnd);
+    _Size	szDefault	= ((ESChildControl*)pControlNew)->GetControlDefaultSize();
 
 	_Rect rcControl;
 	rcControl.left		= pt.x;

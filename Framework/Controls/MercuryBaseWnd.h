@@ -11,6 +11,7 @@
 #include "../_platformCompat/PlatformPoint.h"
 #include "../_platformCompat/PlatformDateTime.h"
 #include "../_platformCompat/PlatformLongBinary.h"
+#include "../_platformCompat/PlatformCursor.h"
 
 #include "MercuryGUI.h"
 #include "ESFrameBase.h"
