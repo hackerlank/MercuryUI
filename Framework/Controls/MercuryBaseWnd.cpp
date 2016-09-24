@@ -73,7 +73,7 @@ ESDesignFileInfo::~ESDesignFileInfo(){
 //
 // ####################################################
 
-MercuryBaseView::MercuryBaseView() : ESFrameBase(), m_layerMan(this) {
+MercuryBaseView::MercuryBaseView() : ESFrameBase(), m_layerMan(this), m_menuContext(this, (CommandHandlerProc)&MercuryBaseView::OnCommandCommand ) {
 	// Register child classes. {{
 	ESChildControl::RegisterChildClass(_T("ESChildControlLabel"),		new ESChildControlLabel);
 	ESChildControl::RegisterChildClass(_T("ESChildControlImage"),		new ESChildControlImage);
@@ -301,29 +301,6 @@ MercuryBaseView::Redraw(_Rect rcRedraw, ESChildControl* pChildOnly /*= NULL*/){
     _DC memDC;
     memDC.CreateMemoryBitmapDC(32, rcClipBox.Width(), rcClipBox.Height());
     
-    /*
-    _Rect rcFill1(0, 0, 200, 200);
-    _Rect rcFill2(25, 25, 75, 75);
-    
-    //memDC.CreateMemoryBitmapDC(32, 200, 200);
-    memDC.FillSolidRect(rcFill1, ARGB(0, 255, 255, 255));
-    memDC.FillSolidRect(rcFill2, ARGB(200, 200, 100, 255));
-    
-    LOGFONT lf;
-    memset(&lf, 0, sizeof(LOGFONT));
-    strcpy(lf.lfFaceName, "Zapfino");
-    lf.lfHeight = 14;
-    lf.lfItalic = 1;
-    
-    _Font font;
-    font.CreateFontIndirect(&lf);
-    memDC.SelectObject(&font);
-    memDC.SetTextColor(ARGB(0, 0, 0, 255));
-    
-    
-    NSString* drawStr = @"სუპ ბოი სუპ ბოი სუპ ბოი სუპ ბოი სუპ ბოი სუპ ბოი";
-    memDC.ExtTextOut(0, 0, 0, _Rect(0, 0, 200, 200), [drawStr cStringUsingEncoding:NSUTF8StringEncoding]);
-*/
 	// Call virtual function 'OnPaintClient'.
 	_Rect rRectDC(0, 0, rcClipBox.Width(), rcClipBox.Height());
 	// Draw background first.
@@ -1242,9 +1219,9 @@ MercuryBaseView::OnLButtonDown(UINT nFlags, _Point point){
 
 void
 MercuryBaseView::OnRButtonUp(UINT nFlags, _Point point){
-	/*
-	// Designer mode. {{
+    // Designer mode. {{
 	if( m_bDesignerMode ){
+#ifdef _WINDOWS
 		// Destroy old menu. {{
 		if( ::IsMenu(m_menuContext) )
 			::DestroyMenu(m_menuContext.Detach());
@@ -1348,12 +1325,100 @@ MercuryBaseView::OnRButtonUp(UINT nFlags, _Point point){
 
 		ESFrameBase::OnRButtonUp(nFlags, point);
 		return;
-		}
-	// }}
+#elif __APPLE__
+        List<_UIMenuItem> listItems;
+        _UIMenuItemCollection itemsColl;
+        _UIMenuItem* pParentItem = nullptr;
+        m_menuContext.DestroyMenu();
+        
+        int nSelectedCt = GetSelectedCt();
+        if( nSelectedCt > 0 ){
+            ESChildControl* pLastSel = GetSelectedControl(m_arrSelectedControlIds.GetCount() - 1);
+            if( pLastSel && pLastSel->AllowToAddChildControl() ){
+                LPCTSTR pArrItemText[] = { _T("Label"), _T("Image"), _T("ImageButton"), _T("TextBox"), _T("CheckBox"),
+                    _T("ComboBox"), _T("Slider"), _T("ProgressCtrl"), _T("Avatar"), _T("Simple Render View"),
+                    _T("List"), _T("Tab"), _T("TabView"), _T("Banner"), _T("PropertyGrid") };
+                
+                UINT_PTR arrIds[] = { MI_LABEL_AS_CHILD, MI_IMAGE_AS_CHILD, MI_IMAGEBUTTON_AS_CHILD, MI_TEXTBOX_AS_CHILD, MI_CHECKBOX_AS_CHILD,
+                    MI_COMBOBOX_AS_CHILD, MI_SLIDER_AS_CHILD, MI_PROGRESSCTRL_AS_CHILD, MI_AVATAR_AS_CHILD, MI_SIMPLERENDERVIEW_AS_CHILD, MI_LIST_AS_CHILD,
+                    MI_TAB_AS_CHILD, MI_TABVIEW_AS_CHILD, MI_BANNER_AS_CHILD, MI_PROPERTYGRID_AS_CHILD };
+                
+                listItems.Add(itemsColl.AddItem(new _UIMenuItem(_T("Add Child"), 0)));
+                pParentItem = itemsColl.GetTail();
+                for(int i=0; i<sizeof(arrIds)/sizeof(UINT_PTR); i++){
+                    listItems.Add(itemsColl.AddItem(new _UIMenuItem(pArrItemText[i], arrIds[i]), pParentItem));
+                }
+            }
+            
+            listItems.Add(itemsColl.AddItem(new _UIMenuItem(_T(""), 0, nullptr, true)));
+            if( nSelectedCt > 1 ){
+                LPCTSTR pArrItemText[] = { _T("Align Lefts"), _T("Align Tops"), _T("Align Rights"), _T("Align Bottoms"), _T("Make Same Width"),
+                    _T("Make Same Height"), _T("Make Same Size All")};
+                
+                UINT_PTR arrIds[] = { MI_ALIGN_LEFTS, MI_ALIGN_TOPS, MI_ALIGN_RIGHTS, MI_ALIGN_BOTTOMS, MI_MAKE_SAME_SIZE_WIDTH,
+                    MI_MAKE_SAME_SIZE_HEIGHT, MI_MAKE_SAME_SIZE_BOTH};
+                
+                for(int i=0; i<sizeof(arrIds)/sizeof(UINT_PTR); i++){
+                    listItems.Add(itemsColl.AddItem(new _UIMenuItem(pArrItemText[i], arrIds[i])));
+                }
+            }
+            
+            BOOL	bLock	= FALSE;
+            int		nLoop	= 0, nCt = m_arrSelectedControlIds.GetCount();
+            while( nLoop < nCt ){
+                ESChildControl* pControl = GetChildControlByName((const TCHAR*)m_arrSelectedControlIds.GetKey(nLoop).c_str());
+                if( pControl && !pControl->IsLocked() )
+                    bLock = TRUE;
+                nLoop ++;
+            }
+            
+            if( bLock )
+                listItems.Add(itemsColl.AddItem(new _UIMenuItem(_T("Lock"), MI_LOCK)));
+                //m_menuContext.AppendMenu(MF_STRING|MF_UNCHECKED, MI_LOCK,		(LPCTSTR)_T("Lock"));
+            else
+                listItems.Add(itemsColl.AddItem(new _UIMenuItem(_T("Unlock"), MI_UNLOCK)));
+                //m_menuContext.AppendMenu(MF_STRING|MF_CHECKED, MI_UNLOCK,		(LPCTSTR)_T("Unlock"));
+            
+            listItems.Add(itemsColl.AddItem(new _UIMenuItem(_T("Copy"), MI_COPY)));
+            listItems.Add(itemsColl.AddItem(new _UIMenuItem(_T("Cut"), MI_CUT)));
+        }
+        else{
+            LPCTSTR pArrItemText[] = { _T("Label"), _T("Image"), _T("ImageButton"), _T("TextBox"), _T("CheckBox"), _T("ComboBox"), _T("Slider"),
+                _T("ProgressCtrl"), _T("Avatar"), _T("Simple Render View"), _T("List"), _T("Tab"), _T("TabView"), _T("Banner"), _T("PropetyGrid") };
+            
+            UINT_PTR arrIds[] = { MI_LABEL, MI_IMAGE, MI_IMAGEBUTTON, MI_TEXTBOX, MI_CHECKBOX,
+                MI_COMBOBOX, MI_SLIDER, MI_PROGRESSCTRL, MI_AVATAR, MI_SIMPLERENDERVIEW, MI_LIST, MI_TAB, MI_TABVIEW, MI_BANNER, MI_PROPERTYGRID};
+            
+            listItems.Add(itemsColl.AddItem(new _UIMenuItem(_T("Create New"), 0)));
+            pParentItem = itemsColl.GetTail();
 
-	if( m_pControlUnderCursor )
-		m_pControlUnderCursor->OnRButtonUp(point, nFlags);
-	*/
+            for(int i=0; i<sizeof(arrIds)/sizeof(UINT_PTR); i++){
+                listItems.Add(itemsColl.AddItem(new _UIMenuItem(pArrItemText[i], arrIds[i]), pParentItem));
+            }
+        }
+        
+        listItems.Add(itemsColl.AddItem(new _UIMenuItem(_T("Paste"), MI_PASTE)));
+        listItems.Add(itemsColl.AddItem(new _UIMenuItem(_T("Open"), MI_OPEN_DESIGNER_FILE)));
+        listItems.Add(itemsColl.AddItem(new _UIMenuItem(_T("Save"), MI_SAVE_DESIGNER_FILE)));
+        listItems.Add(itemsColl.AddItem(new _UIMenuItem(_T("List of controls"), MI_LIST_OF_CONTROLS)));
+        listItems.Add(itemsColl.AddItem(new _UIMenuItem(_T("Properties"), MI_PROPERTIES)));
+        if( nSelectedCt > 0 )
+            listItems.Add(itemsColl.AddItem(new _UIMenuItem(_T("Base View Properties"), MI_BASEVIEW_PROPERTIES)));
+        
+        m_menuContext.CreatePopupMenu(itemsColl.GetHead());
+        
+        //DesignerContextMenu(&m_menuContext, &newControl, &newChildControl);
+        
+        m_menuContext.ShowContextMenu(_Cursor::GetCurrentPos(m_hWnd, true), m_hWnd);
+        ESFrameBase::OnRButtonUp(nFlags, point);
+        return;
+#endif
+    }
+    // }}
+    
+    if( m_pControlUnderCursor )
+        m_pControlUnderCursor->OnRButtonUp(point, nFlags);
+	
 	ESFrameBase::OnRButtonUp(nFlags, point);
 	}
 

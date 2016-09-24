@@ -12,6 +12,7 @@
 #include "../_platformCompat/PlatformDateTime.h"
 #include "../_platformCompat/PlatformLongBinary.h"
 #include "../_platformCompat/PlatformCursor.h"
+#include "../_platformCompat/PlatformUIMenu.h"
 
 #include "MercuryGUI.h"
 #include "ESFrameBase.h"
@@ -121,6 +122,7 @@ enum ChildControlEventCode{
 class ESChildControl;
 typedef void (__thiscall ESFrameBase::*ControlEventListener)(ESChildControl* pSender, ChildControlEventCode eventCode, void* lpParam);
 
+
 struct ChildEventListenerInfo{
 	ControlEventListener	method;
 	ESChildControl*			pSender;
@@ -134,8 +136,8 @@ public:
 	virtual ~ESChildControlAttribute();
 
 public:
-	_string		m_sClassName;		// Child control's class name.
-	_string		m_sName;			// Child control's name.
+	_string         m_sClassName;		// Child control's class name.
+	_string         m_sName;			// Child control's name.
 	int				m_nId;				// Control id.
 	bool			m_bVisible;			// Contol's visibility.
 
@@ -405,7 +407,6 @@ protected:
 
 	ImageDef										m_hDoubleBufferImage;			// Double buffer image object.
 	BITMAP											m_bmDoubleBufferImage;			// Double buffer image info.
-
     
     
 	StringToPtrArray								m_arrNamedParameters;			// Named parameters list.
@@ -439,6 +440,7 @@ protected:
 	bool											m_bSizing;						// Already sizing controls.
 	int												m_nSizingHitTest;				// ChildControlHitTest
 //	CMenu											m_menuContext;
+    _UIMenu                                         m_menuContext;
 
 	ESSerializableModifyDlg*						m_propertyDlg;
 	ESSerializableModifyDlg*						m_listOfControlsDlg;
@@ -470,6 +472,7 @@ private:
 	List<RECT>										m_listRedrawRects;				// Redraw rects cached to perform at once in sec/30 period.
 	volatile bool									m_bRedrawOptimizeTimerIsOn;		// Redraw optimize timer status.
 	volatile UINT_PTR								m_nRedrawOptimizeTimeId;
+    
 public:
 	virtual BOOL	OnEraseBkgnd				(_DC *pDC);
 	virtual void	OnPaint						(DCDef dc, _Rect rcRedraw);
@@ -490,6 +493,7 @@ public:
 	virtual void	OnRedrawRect				(CPtrArray*	pArrRects, BOOL	bAtOnce);
 
 protected:
+    void    OnCommandCommand            (UINT_PTR nId);
 	// Context menu command events used only in designer mode.
 	void	OnCommandLabel				();
 	void	OnCommandImage				();

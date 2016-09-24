@@ -6,7 +6,7 @@
 
 
 _Point
-_Cursor::GetCurrentPos(HWND toClient){
+_Cursor::GetCurrentPos(HWND toClient, bool dontReverseOY /*= false*/){
     
 #ifdef _WINDOWS
     _Point pt;
@@ -19,7 +19,8 @@ _Cursor::GetCurrentPos(HWND toClient){
     if(toClient != nil){
         pt = [[toClient window] convertRectFromScreen:CGRectMake(pt.x, pt.y, 0, 0)].origin;
         // Change according used coords system (top left).
-        pt.y = [toClient bounds].size.height - pt.y;
+        if(!dontReverseOY)
+            pt.y = [toClient bounds].size.height - pt.y;
     }
     return _Point(pt.x, pt.y);
 #endif

@@ -33,6 +33,10 @@
 // ####################################################
 
 void
+MercuryBaseView::OnCommandCommand(UINT_PTR nId){
+}
+
+void
 MercuryBaseView::OnCommandLabel(){
 	ESChildControlLabel*	pControlNew = new ESChildControlLabel();
 	if( AddNewControl(pControlNew, NULL) ){

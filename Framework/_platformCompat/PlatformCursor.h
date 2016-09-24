@@ -18,7 +18,7 @@ public:
         Beam
     };
     
-    static _Point GetCurrentPos(HWND toClient);
+    static _Point GetCurrentPos(HWND toClient, bool dontReverseOY = false);
     static bool SetCursor(SystemCursorType cursorType);
 };
 #endif // !defined(PLATFORMCURSOR_H_INCLUDED)

@@ -12,6 +12,7 @@
 #include "Controls/ESChildControl.h"
 #include "_PlatformCompat/PlatformDeviceContext.h"
 #include "Utility/GrowableMemory.h"
+#include "_PlatformCompat/PlatformUIMenu.h"
 
 @interface NSViewMy()
 {
@@ -27,8 +28,8 @@
 
 @end
 
-@implementation NSViewMy
 
+@implementation NSViewMy
 
 -(id)initWithFrame:(NSRect)frameRect
 {
@@ -49,9 +50,10 @@
     if( _pMercuryView == NULL )
     {
         NSTrackingAreaOptions options = (NSTrackingActiveAlways | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved);
-        
         NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:self userInfo:nil];
         [self addTrackingArea: area];
+        
+        //_menu = [[NSMenuCtrl alloc] initialize];
         
         //FILE* file = fopen(_T("/Volumes/OSX-DATA/Dev/ESPoker_06.01.2014/_bin/ESPokerClient_Debug/design/Lobby.des"), "r+b");
         //_Rect rcDraw(rcView.origin.x, rcView.origin.y, (rcView.origin.x + rcView.size.width), (rcView.origin.y + rcView.size.height));
@@ -85,7 +87,7 @@
         }*/
                 
         _string designFile = _T("design/Lobby.des");
-        designFile = _T("design/TournamentLobby.des");
+        //designFile = _T("TournamentLobby.des");
         //_string designFile = _T("/Volumes/OSX/Users/ZqrTalent/Desktop/Dev/design/Lobby.des");
         //_string designFile = _T("/Volumes/OSX-DATA/Dev/ESPoker_06.01.2014/_bin/ESPokerClient_Debug/design/LoginDialog.des");
         _pMercuryView->LoadFromDesignFile(designFile);
@@ -169,6 +171,17 @@
         NSPoint ptView = [self convertPoint:pt toView:self];
         _pMercuryView->OnLButtonDown(nFlags, _Point(ptView.x, [self bounds].size.height - ptView.y));
     }
+    
+    /*
+    NSMenu *theMenu = [[NSMenu alloc] initWithTitle:@"Contextual Menu"];
+    SEL sel1 = @selector(testItemClick:);
+    [theMenu insertItemWithTitle:@"Beep" action:sel1 keyEquivalent:@"" atIndex:0];
+    [theMenu insertItemWithTitle:@"Honk" action:@selector(honk:) keyEquivalent:@"" atIndex:1];
+    
+    [NSMenu popUpContextMenu:theMenu withEvent:theEvent forView:self];
+     */
+    
+    //[_menu showMenu:theEvent forView:self];
 }
 
 -(void)mouseUp:(NSEvent *)theEvent
@@ -179,6 +192,17 @@
         NSPoint pt = [theEvent locationInWindow];
         NSPoint ptView = [self convertPoint:pt toView:self];
         _pMercuryView->OnLButtonUp(0, _Point(ptView.x, [self bounds].size.height - ptView.y));
+    }
+}
+
+-(void)rightMouseUp:(NSEvent *)theEvent
+{
+    [super rightMouseUp:theEvent];
+    if(_pMercuryView != NULL)
+    {
+        NSPoint pt = [theEvent locationInWindow];
+        NSPoint ptView = [self convertPoint:pt toView:self];
+        _pMercuryView->OnRButtonUp(0, _Point(ptView.x, [self bounds].size.height - ptView.y));
     }
 }
 

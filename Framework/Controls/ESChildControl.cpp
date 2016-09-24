@@ -793,9 +793,9 @@ ESChildControl::SendEvent(ESChildControl* pSender, int eventCode, void* lpParam 
 	while( nLoop < nCt ){
 		ChildEventListenerInfo* pInfo = pListeners->GetAt(nLoop);
 		if( pInfo && pInfo->pSender == pSender && pInfo->method != NULL ){
-			void*					pThis	= pInfo->pReceiver;
-			void*					pSender	= pInfo->pSender;
+			void*   pThis	= pInfo->pReceiver;
 			ControlEventListener	method	= pInfo->method;
+            (((ESFrameBase*)pThis)->*method)(pInfo->pSender, (ChildControlEventCode)eventCode, lpParam);
 		/*
 			// Call thiscall method. {{
 			__asm{
