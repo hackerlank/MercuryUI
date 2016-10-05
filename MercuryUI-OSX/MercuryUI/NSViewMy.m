@@ -90,7 +90,7 @@
         //designFile = _T("TournamentLobby.des");
         //_string designFile = _T("/Volumes/OSX/Users/ZqrTalent/Desktop/Dev/design/Lobby.des");
         //_string designFile = _T("/Volumes/OSX-DATA/Dev/ESPoker_06.01.2014/_bin/ESPokerClient_Debug/design/LoginDialog.des");
-        _pMercuryView->LoadFromDesignFile(designFile);
+        //_pMercuryView->LoadFromDesignFile(designFile);
         [self setNeedsDisplay:YES];
     }
 }

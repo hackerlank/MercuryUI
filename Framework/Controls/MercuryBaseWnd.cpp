@@ -148,7 +148,63 @@ MercuryBaseView::MercuryBaseView() : ESFrameBase(), m_layerMan(this), m_menuCont
 
 	m_propertyDlg				= NULL;
 	m_listOfControlsDlg			= NULL;
-	}
+    
+    // Register command callbacks
+    m_mapManuCommandById.Add(MI_LABEL, &MercuryBaseView::OnCommandLabel);
+    m_mapManuCommandById.Add(MI_IMAGE, &MercuryBaseView::OnCommandImage);
+    m_mapManuCommandById.Add(MI_IMAGEBUTTON, &MercuryBaseView::OnCommandImageButton);
+    m_mapManuCommandById.Add(MI_TEXTBOX, &MercuryBaseView::OnCommandTextBox);
+    m_mapManuCommandById.Add(MI_CHECKBOX, &MercuryBaseView::OnCommandCheckBox);
+    m_mapManuCommandById.Add(MI_COMBOBOX, &MercuryBaseView::OnCommandComboBox);
+    m_mapManuCommandById.Add(MI_SLIDER, &MercuryBaseView::OnCommandSlider);
+    m_mapManuCommandById.Add(MI_AVATAR, &MercuryBaseView::OnCommandAvatar);
+    m_mapManuCommandById.Add(MI_PROGRESSCTRL, &MercuryBaseView::OnCommandProgressCtrl);
+    m_mapManuCommandById.Add(MI_SIMPLERENDERVIEW, &MercuryBaseView::OnCommandSimpleRenderView);
+    m_mapManuCommandById.Add(MI_LIST, &MercuryBaseView::OnCommandList);
+    m_mapManuCommandById.Add(MI_TREE, &MercuryBaseView::OnCommandTree);
+    m_mapManuCommandById.Add(MI_TAB, &MercuryBaseView::OnCommandTab);
+    m_mapManuCommandById.Add(MI_TABVIEW, &MercuryBaseView::OnCommandTabView);
+    m_mapManuCommandById.Add(MI_TREEVIEW, &MercuryBaseView::OnCommandTreeView);
+    m_mapManuCommandById.Add(MI_BANNER, &MercuryBaseView::OnCommandBanner);
+    m_mapManuCommandById.Add(MI_PROPERTYGRID, &MercuryBaseView::OnCommandPropertyGrid);
+    
+    m_mapManuCommandById.Add(MI_LABEL_AS_CHILD, &MercuryBaseView::OnCommandLabelAsChild);
+    m_mapManuCommandById.Add(MI_IMAGE_AS_CHILD, &MercuryBaseView::OnCommandImageAsChild);
+    m_mapManuCommandById.Add(MI_IMAGEBUTTON_AS_CHILD, &MercuryBaseView::OnCommandImageButtonAsChild);
+    m_mapManuCommandById.Add(MI_TEXTBOX_AS_CHILD, &MercuryBaseView::OnCommandTextBoxAsChild);
+    m_mapManuCommandById.Add(MI_CHECKBOX_AS_CHILD, &MercuryBaseView::OnCommandCheckBoxAsChild);
+    m_mapManuCommandById.Add(MI_COMBOBOX_AS_CHILD, &MercuryBaseView::OnCommandComboBoxAsChild);
+    m_mapManuCommandById.Add(MI_SLIDER_AS_CHILD, &MercuryBaseView::OnCommandSliderAsChild);
+    m_mapManuCommandById.Add(MI_AVATAR_AS_CHILD, &MercuryBaseView::OnCommandAvatarAsChild);
+    m_mapManuCommandById.Add(MI_PROGRESSCTRL_AS_CHILD, &MercuryBaseView::OnCommandProgressCtrlAsChild);
+    m_mapManuCommandById.Add(MI_SIMPLERENDERVIEW_AS_CHILD, &MercuryBaseView::OnCommandSimpleRenderViewAsChild);
+    m_mapManuCommandById.Add(MI_LIST_AS_CHILD, &MercuryBaseView::OnCommandListAsChild);
+    m_mapManuCommandById.Add(MI_TREE_AS_CHILD, &MercuryBaseView::OnCommandTreeAsChild);
+    m_mapManuCommandById.Add(MI_TAB_AS_CHILD, &MercuryBaseView::OnCommandTabAsChild);
+    m_mapManuCommandById.Add(MI_TABVIEW_AS_CHILD, &MercuryBaseView::OnCommandTabViewAsChild);
+    m_mapManuCommandById.Add(MI_TREEVIEW_AS_CHILD, &MercuryBaseView::OnCommandTreeViewAsChild);
+    m_mapManuCommandById.Add(MI_BANNER_AS_CHILD, &MercuryBaseView::OnCommandBannerAsChild);
+    m_mapManuCommandById.Add(MI_PROPERTYGRID_AS_CHILD, &MercuryBaseView::OnCommandPropertyGridAsChild);
+
+    m_mapManuCommandById.Add(MI_ALIGN_LEFTS, &MercuryBaseView::OnCommandAlignLefts);
+    m_mapManuCommandById.Add(MI_ALIGN_TOPS, &MercuryBaseView::OnCommandAlignTops);
+    m_mapManuCommandById.Add(MI_ALIGN_RIGHTS, &MercuryBaseView::OnCommandAlignRights);
+    m_mapManuCommandById.Add(MI_ALIGN_BOTTOMS, &MercuryBaseView::OnCommandAlignBottoms);
+    m_mapManuCommandById.Add(MI_MAKE_SAME_SIZE_WIDTH, &MercuryBaseView::OnCommandMakeSameSizeWidth);
+    m_mapManuCommandById.Add(MI_MAKE_SAME_SIZE_HEIGHT, &MercuryBaseView::OnCommandMakeSameSizeHeight);
+    m_mapManuCommandById.Add(MI_MAKE_SAME_SIZE_BOTH, &MercuryBaseView::OnCommandMakeSameSizeBoth);
+    m_mapManuCommandById.Add(MI_LOCK, &MercuryBaseView::OnCommandLock);
+    m_mapManuCommandById.Add(MI_UNLOCK, &MercuryBaseView::OnCommandUnlock);
+    
+    m_mapManuCommandById.Add(MI_COPY, &MercuryBaseView::OnCommandCopy);
+    m_mapManuCommandById.Add(MI_CUT, &MercuryBaseView::OnCommandCut);
+    m_mapManuCommandById.Add(MI_PASTE, &MercuryBaseView::OnCommandPaste);
+    m_mapManuCommandById.Add(MI_LIST_OF_CONTROLS, &MercuryBaseView::OnCommandListOfControls);
+    m_mapManuCommandById.Add(MI_OPEN_DESIGNER_FILE, &MercuryBaseView::OnCommandOpenDesignerFile);
+    m_mapManuCommandById.Add(MI_SAVE_DESIGNER_FILE, &MercuryBaseView::OnCommandSaveDesignerFile);
+    m_mapManuCommandById.Add(MI_PROPERTIES, &MercuryBaseView::OnCommandProperties);
+    m_mapManuCommandById.Add(MI_BASEVIEW_PROPERTIES, &MercuryBaseView::OnCommandBaseViewProperties);
+}
 
 MercuryBaseView::~MercuryBaseView(){
 	//if( m_pRowSet && m_pRowSet->GetOwner() == this ){

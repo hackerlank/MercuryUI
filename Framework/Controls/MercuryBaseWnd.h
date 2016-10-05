@@ -121,7 +121,7 @@ enum ChildControlEventCode{
 
 class ESChildControl;
 typedef void (__thiscall ESFrameBase::*ControlEventListener)(ESChildControl* pSender, ChildControlEventCode eventCode, void* lpParam);
-
+typedef void (__thiscall MercuryBaseView::*CommandProc)();
 
 struct ChildEventListenerInfo{
 	ControlEventListener	method;
@@ -441,6 +441,7 @@ protected:
 	int												m_nSizingHitTest;				// ChildControlHitTest
 //	CMenu											m_menuContext;
     _UIMenu                                         m_menuContext;
+    AutoSortedArrayTempl<UINT_PTR, CommandProc>     m_mapManuCommandById;
 
 	ESSerializableModifyDlg*						m_propertyDlg;
 	ESSerializableModifyDlg*						m_listOfControlsDlg;

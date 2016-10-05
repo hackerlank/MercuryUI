@@ -34,6 +34,10 @@
 
 void
 MercuryBaseView::OnCommandCommand(UINT_PTR nId){
+    CommandProc cmdProc = m_mapManuCommandById.GetAt(nId);
+    if(cmdProc != nullptr){
+        (this->*cmdProc)();
+    }
 }
 
 void
