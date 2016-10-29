@@ -7,9 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "Controls/NSWindowFrame/NSWindowFrame.h"
 
 
-@interface NSWindowMy : NSWindow<NSWindowDelegate>
+@interface NSWindowMy : NSWindowFrame
 {
 
 }

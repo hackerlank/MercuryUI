@@ -21,6 +21,8 @@
 *.tar
 *.zip
 
+.DS_Store
+
 # Logs and databases #
 ######################
 *.log

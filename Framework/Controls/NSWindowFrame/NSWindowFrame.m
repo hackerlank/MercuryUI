@@ -1,22 +1,22 @@
 //
-//  NSWindowMy.m
-//  OSXWindowEvents
+//  MyModalWindow.m
+//  WindowCreationApp
 //
-//  Created by Zaqro Butskhrikidze on 8/14/14.
-//  Copyright (c) 2014 Zaqro Butskhrikidze. All rights reserved.
+//  Created by Zaqro Butskrikidze on 10/15/16.
+//  Copyright © 2016 zaqro butskrikidze. All rights reserved.
 //
 
-#import "NSWindowMy.h"
-#import "NSViewMy.h"
+#import "NSWindowFrame.h"
+#import "NSWindowFrameView.h"
 
-@implementation NSWindowMy
+@implementation NSWindowFrame
 
-/*
 -(id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)aStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)flag
 
 {
     self = [super initWithContentRect:contentRect styleMask:aStyle backing:bufferingType defer:flag];
     NSLog(@"init");
+   
     [self setAcceptsMouseMovedEvents:YES];
     return self;
 }
@@ -80,44 +80,28 @@
     [super magnifyWithEvent:theEvent];
     
     NSLog(@"magnify with event");
-}*/
-
-
--(IBAction) onClick:(NSButton*)sender
-{
-    NSLog(@"button click");
-    
-    
-    NSOpenPanel* openDialog = [NSOpenPanel openPanel];
-    openDialog.allowedFileTypes = [[NSArray alloc] initWithObjects:@"des", @"png",nil];
-    openDialog.allowsMultipleSelection = NO;
-    [openDialog setDirectoryURL:[NSURL URLWithString:@"/Volumes/OSX-DATA/Dev/ESPoker_06.01.2014/"]];
-    
-    NSLog(@"%@", [[[NSBundle mainBundle] bundleURL] URLByDeletingLastPathComponent]);
-    
-    if( [openDialog runModal] == NSOKButton )
-    {
-       NSArray* arrChosenFiles = [openDialog URLs];
-        for(int i=0; i<arrChosenFiles.count; i++)
-        {
-            NSLog(@"%@", [[arrChosenFiles objectAtIndex:i] path]);
-        }
-    }
-    
 }
 
-/*
 -(NSSize)windowWillResize:(NSWindow *)sender toSize:(NSSize)frameSize
 {
     NSLog(@"resize event %f %f", frameSize.width, frameSize.height);
-    [((NSViewMy*)_contentView) resizeEvent:frameSize];
-    
+    [((NSWindowFrameView*)_contentView) resizeEvent:frameSize];
     return frameSize;
 }
 
 -(void)windowWillMiniaturize:(NSNotification *)notification
 {
     NSLog(@"on minimize");
-}*/
+}
+
+
+ -(void)windowWillClose:(NSNotification *)notification
+{
+}
+
+-(BOOL)windowShouldClose:(id)sender
+{
+    return YES;
+}
 
 @end

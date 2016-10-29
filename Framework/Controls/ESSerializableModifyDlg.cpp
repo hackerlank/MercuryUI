@@ -62,7 +62,9 @@ ESSerializableModifyDlg::SetListOfObjects(EnumerableObject<Serializable>* pListO
 void
 ESSerializableModifyDlg::Setup(){
 	// Create child window.
-	ESFrameBase::Setup();
+	MercuryBaseView::Setup();
+    
+    SetDesignerMode(false);
 
 	_Rect rcClient;
 	GetClientRectMy(rcClient);
@@ -78,14 +80,14 @@ ESSerializableModifyDlg::Setup(){
 
 void
 ESSerializableModifyDlg::OnDestroy(){
-	ESFrameBase::OnDestroy();
+	MercuryBaseView::OnDestroy();
 	}
 
 
 void
 ESSerializableModifyDlg::OnClose(){
 	//ShowWindow(SW_HIDE);
-	//ESFrameBase::OnClose();
+	//MercuryBaseView::OnClose();
 	}
 
 // ######################################################
@@ -100,6 +102,8 @@ ESSerializableModifyDlg::CreateChildControls(){
 	GetClientRectMy(rcClient);
 
 	m_pGrid = new ESChildControlPropertyGrid();
+    m_pGrid->AllowMouseEvents(true);
+    
 	if( !AddChildControl(m_pGrid, 1000, rcClient, NULL) ){
 		delete m_pGrid;
 		ESChildControl* pControl = GetChildControl(1000);

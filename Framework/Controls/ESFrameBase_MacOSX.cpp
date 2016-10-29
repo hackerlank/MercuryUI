@@ -18,6 +18,8 @@ ESFrameBase::ESFrameBase() {
 	m_nCaptionHeight		= 0;
 	m_sWndClass				= _T("ESFrameBase");
 	m_pOwner				= NULL;
+    
+    m_pNSWnd                = NULL;
 	}
 
 ESFrameBase::~ESFrameBase(){
@@ -25,24 +27,17 @@ ESFrameBase::~ESFrameBase(){
 
 int
 ESFrameBase::Create(){
-    /*
 	ASSERT(m_hWnd == NULL);
 	if( m_hWnd ){
 		// Window is already created!!!!
 		return 0;
 		}
 
-	_string wndClassName;
-	if( !OnRegisterWindowClass(NULL, wndClassName) ){
-		// Window class registration failed !!!
-		return 0;
-		}
-
-	if( !OnInitDialog() ){
+    if( !OnInitDialog() ){
 		// Initialization of window is failed !!!
 		return 0;
 		}
-
+/*
 	MSG msg;
 	// Main message loop:
 	while ( GetMessage(&msg, NULL, 0, 0) ){
@@ -370,7 +365,36 @@ ESFrameBase::OnInitDialog(){
 	::ShowWindow	(hWnd, SW_NORMAL);
 	//UpdateWindow	(hWnd);
 */
-	return TRUE;  // return TRUE  unless you set the focus to a control
+    
+    NSRect contentRect = CGRectMake(0, 0, 200, 200);
+    NSUInteger styleMask = NSWindowStyleMaskTitled|NSWindowStyleMaskClosable;
+    
+    // Set default window size.
+    if( m_szDefault.cx >0 && m_szDefault.cy > 0 ){
+        contentRect.size.width = m_szDefault.cx;
+        contentRect.size.height = m_szDefault.cy;
+    }
+    
+    // Creation of NSWindow.
+    NSWindowFrame* myModal = [[NSWindowFrame alloc] initWithContentRect:contentRect styleMask:styleMask backing:NSBackingStoreBuffered defer:NO];
+    [myModal setReleasedWhenClosed:NO];
+    
+    NSWindowFrameView* modalView = [[NSWindowFrameView alloc] init];
+    [myModal setContentView:modalView];
+    [myModal makeKeyAndOrderFront:myModal];
+    
+    m_pNSWnd = myModal;
+    m_hWnd	= modalView;
+    AttachWND(m_hWnd, this);
+    
+    //CalcCaptionBorderSize();
+    
+    // Setup.
+    Setup();
+    // Set title.
+    SetTitle();
+    
+    return TRUE;  // return TRUE  unless you set the focus to a control
 	}
 
 bool
@@ -422,7 +446,7 @@ ESFrameBase::FromHandle(HWND hWnd){
 void
 ESFrameBase::Invalidate(BOOL eraseBkgnd){
     if( m_hWnd )
-        [m_hWnd setNeedsLayout:YES];
+        [m_hWnd setNeedsDisplay:YES];
 	}
 
 void

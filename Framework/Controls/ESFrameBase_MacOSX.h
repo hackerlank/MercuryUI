@@ -11,6 +11,9 @@ class ESChildControl;
 #include "../_platformCompat/PlatformSize.h"
 #include "../Array/AutoSortedArray.h"
 
+#include "NSWindowFrame/NSWindowFrame.h"
+#include "NSWindowFrame/NSWindowFrameView.h"
+
 #ifndef WM_REDRAW_RECT
 	#define WM_REDRAW_RECT	WM_USER + 20
 #endif
@@ -156,6 +159,9 @@ public:
 
 protected:
 //	HICON					m_hIcon;
+    
+    NSWindowFrame*          m_pNSWnd;
+    
 	HWND                    m_hWnd;
 	_string                 m_sWndClass;			// Window class name.
 

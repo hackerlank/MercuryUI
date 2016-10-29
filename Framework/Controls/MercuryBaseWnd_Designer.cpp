@@ -695,7 +695,7 @@ MercuryBaseView::OnCommandListOfControls(){
 	else{
 		if( !m_listOfControlsDlg )
 			m_listOfControlsDlg = new ESSerializableModifyDlg();
-		m_listOfControlsDlg->Create				();
+            m_listOfControlsDlg->Create();
 		//m_listOfControlsDlg->AddEventListener	(this, 1000/*Property Grid control id*/, EventCode_PropertyItemSelChange, (ControlEventListenerTemp)&MercuryBaseView::ListOfControls_PropertyItemSelChange);
 		}
 
@@ -780,6 +780,39 @@ MercuryBaseView::OnCommandProperties(){
 	else
 		m_propertyDlg.SetSerializableObject(&m_info);
 		*/
+    
+#ifdef __APPLE__
+    if(m_propertyDlg == nullptr){
+        m_propertyDlg = new ESSerializableModifyDlg();
+        m_propertyDlg->Create();
+        
+    }
+    else{
+        m_propertyDlg = new ESSerializableModifyDlg();
+        m_propertyDlg->Create();
+    }
+
+    if( GetSelectedCt() > 0 ){
+        ESChildControl* pSelected = GetChildControlByName(m_arrSelectedControlIds.GetKey(0).c_str());
+        if( pSelected )
+            m_propertyDlg->SetSerializableObject(pSelected);
+    }
+    else
+        m_propertyDlg->SetSerializableObject(&m_info);
+    //m_propertyDlg->Invalidate();
+    /*
+    NSRect contentRect = CGRectMake(0, 0, 200, 200);
+    NSUInteger styleMask = NSWindowStyleMaskTitled|NSWindowStyleMaskClosable;
+    
+    m_pPropertyWindowOS = [[NSWindowFrame alloc] initWithContentRect:contentRect styleMask:styleMask backing:NSBackingStoreBuffered defer:NO];
+    [m_pPropertyWindowOS setReleasedWhenClosed:NO];
+    
+    NSWindowFrameView* _modalView = [[NSWindowFrameView alloc] init];
+    [_modalView setMercuryViewToDisplay:(MercuryBaseView*)m_propertyDlg];
+
+    [m_pPropertyWindowOS setContentView:_modalView];
+    [m_pPropertyWindowOS makeKeyAndOrderFront:m_pPropertyWindowOS];*/
+#endif
 	}
 
 void	
@@ -811,8 +844,7 @@ MercuryBaseView::IsControlSelected(ESChildControl* pControl){
 bool
 MercuryBaseView::ClearSelections(bool bRedraw /*= true*/){
 	CPtrArray	arrControls;
-	int			nLoop	= 0;
-	int			nCt		= m_arrSelectedControlIds.GetCount();
+	int			nLoop = 0, nCt = m_arrSelectedControlIds.GetCount();
 
 	_Rect rcClient;
 	GetClientRectMy(rcClient);
@@ -952,7 +984,7 @@ MercuryBaseView::MoveSelectedControls(int nOffsetX, int nOffsetY){
 	_Rect rcClient;
 	GetClientRectMy(rcClient);
 
-	int		nLoop = 0,nCt		= m_arrSelectedControlIds.GetCount();
+	int		nLoop = 0, nCt = m_arrSelectedControlIds.GetCount();
 	_Rect	rcBound(0, 0, 0, 0), rRectOld;
 	_Point	ptPos;
 

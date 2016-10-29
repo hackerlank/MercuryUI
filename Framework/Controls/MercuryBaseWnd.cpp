@@ -1527,6 +1527,13 @@ MercuryBaseView::SetTitle(){
 
 void
 MercuryBaseView::Setup(){
+#ifdef __APPLE__
+    // Initialize NSView to support MercuryView interactions. 
+    if( m_hWnd != nullptr ){
+        [((NSWindowFrameView*)m_hWnd) initializeMercuryView:CGRectMake(0.0, 0.0, 0.0, 0.0) wnd:nil mercuryView:this];
+    }
+#endif
+    
 	ESFrameBase::Setup();
 
 //	m_fHeightAndWidthRatio = 0.689f;

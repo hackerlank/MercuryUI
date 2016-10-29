@@ -19,11 +19,13 @@
 @protected
     _DC         memDC;
     CGImageRef  image;
-    MercuryBaseView* _pMercuryView;
+    MercuryBaseView* _pMercuryView1;
     
     CGImageRef testImage;
     NSBitmapImageRep* testImageRep;
     _Image testImage_;
+    
+    NSWindow* window;
 }
 
 @end
@@ -42,12 +44,12 @@
     [super viewDidMoveToWindow];
     
     // Initialize mercury view.
-    [self initializeMercuryView:CGRectMake(0.0, 0.0, 0.0, 0.0) wnd:nil];
+    [self initializeMercuryView:CGRectMake(0.0, 0.0, 0.0, 0.0) wnd:nil mercuryView:nullptr];
 }
 
--(void)initializeMercuryView:(NSRect)rcView wnd:(NSWindow*)wnd
+-(void)initializeMercuryView1:(NSRect)rcView wnd:(NSWindow*)wnd
 {
-    if( _pMercuryView == NULL )
+    if( _pMercuryView1 == NULL )
     {
         NSTrackingAreaOptions options = (NSTrackingActiveAlways | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved);
         NSTrackingArea *area = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:self userInfo:nil];
@@ -57,9 +59,9 @@
         
         //FILE* file = fopen(_T("/Volumes/OSX-DATA/Dev/ESPoker_06.01.2014/_bin/ESPokerClient_Debug/design/Lobby.des"), "r+b");
         //_Rect rcDraw(rcView.origin.x, rcView.origin.y, (rcView.origin.x + rcView.size.width), (rcView.origin.y + rcView.size.height));
-        _pMercuryView = new MercuryBaseView();
-        _pMercuryView->SetHWND(self);
-        _pMercuryView->SetDesignerMode(true);
+        _pMercuryView1 = new MercuryBaseView();
+        _pMercuryView1->SetHWND(self);
+        _pMercuryView1->SetDesignerMode(true);
         
         /*
         _string arrCOntrolNames[] = {
@@ -97,6 +99,8 @@
 
 -(void)resizeEvent:(NSSize)frameSize
 {
+    [super resizeEvent: frameSize];
+    /*
     if( _pMercuryView != NULL )
     {
         //_pMercuryView->OnSize(0, (int)frameSize.width, (int)frameSize.height);
@@ -106,17 +110,13 @@
     else
     {
         //[self initializeMercuryView:self.frame wnd:[self window]];
-    }
-}
-
--(BOOL)isFlipped
-{
-    return YES;
+    }*/
 }
 
 -(void)mouseMoved:(NSEvent *)theEvent
 {
     [super mouseMoved:theEvent];
+    /*
     if(_pMercuryView != NULL)
     {
         int nFlags = 0;
@@ -134,13 +134,14 @@
         NSPoint ptView = [self convertPoint:pt toView:self];
         _pMercuryView->OnMouseMove(nFlags, _Point(ptView.x, [self bounds].size.height - ptView.y));
         NSLog(@"mouse moved1 - buttonNumber %ld", (long)[theEvent subtype]);
-    }
+    }*/
     
 }
 
 -(void)mouseDragged:(NSEvent *)theEvent
 {
     [super mouseDragged:theEvent];
+    /*
     if(_pMercuryView != NULL)
     {
         int nFlags = MK_LBUTTON;
@@ -148,12 +149,13 @@
         NSPoint ptView = [self convertPoint:pt toView:self];
         _pMercuryView->OnMouseMove(nFlags, _Point(ptView.x, [self bounds].size.height - ptView.y));
     }
-    NSLog(@"mouse dragged");
+    NSLog(@"mouse dragged");*/
 }
 
 -(void)mouseDown:(NSEvent *)theEvent
 {
     [super mouseDown:theEvent];
+    /*
     if(_pMercuryView != NULL)
     {
         int nFlags = 0;
@@ -170,7 +172,7 @@
         NSPoint pt = [theEvent locationInWindow];
         NSPoint ptView = [self convertPoint:pt toView:self];
         _pMercuryView->OnLButtonDown(nFlags, _Point(ptView.x, [self bounds].size.height - ptView.y));
-    }
+    }*/
     
     /*
     NSMenu *theMenu = [[NSMenu alloc] initWithTitle:@"Contextual Menu"];
@@ -187,34 +189,64 @@
 -(void)mouseUp:(NSEvent *)theEvent
 {
     [super mouseUp:theEvent];
-    if(_pMercuryView != NULL)
+    return;
+    
+    if(_pMercuryView1 != NULL)
     {
         NSPoint pt = [theEvent locationInWindow];
         NSPoint ptView = [self convertPoint:pt toView:self];
-        _pMercuryView->OnLButtonUp(0, _Point(ptView.x, [self bounds].size.height - ptView.y));
+        _pMercuryView1->OnLButtonUp(0, _Point(ptView.x, [self bounds].size.height - ptView.y));
     }
+   /*
+    NSRect frame = NSMakeRect(100, 100, 200, 200);
+    NSUInteger styleMask =    NSBorderlessWindowMask;
+    NSRect rect = [NSWindow contentRectForFrameRect:frame styleMask:styleMask];
+    window =  [[NSWindow alloc] initWithContentRect:rect styleMask:styleMask backing: NSBackingStoreBuffered    defer:false];
+    [window setBackgroundColor:[NSColor blueColor]];
+    [window makeKeyAndOrderFront: window];
+    */
+    
+    
+    window = [[NSWindow alloc]
+                        initWithContentRect:NSMakeRect(500, 500, 100, 100)
+                        styleMask:NSBorderlessWindowMask
+                        backing:NSBackingStoreBuffered
+                        defer:NO];
+    
+    // configure window.
+    [window setLevel:NSPopUpMenuWindowLevel];
+    [window setHasShadow:NO];
+    [window setIgnoresMouseEvents:YES];
+    
+    // show window.
+    [window makeKeyAndOrderFront:self];
 }
 
 -(void)rightMouseUp:(NSEvent *)theEvent
 {
     [super rightMouseUp:theEvent];
-    if(_pMercuryView != NULL)
+    return;
+    
+    if(_pMercuryView1 != NULL)
     {
         NSPoint pt = [theEvent locationInWindow];
         NSPoint ptView = [self convertPoint:pt toView:self];
-        _pMercuryView->OnRButtonUp(0, _Point(ptView.x, [self bounds].size.height - ptView.y));
+        _pMercuryView1->OnRButtonUp(0, _Point(ptView.x, [self bounds].size.height - ptView.y));
     }
 }
 
 -(void)drawRect:(NSRect)rect
 {
+    [super drawRect:rect];
+    return;
+    
     NSLog(@"redraw %f %f %f %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
     
     CGContextRef context = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-    if( _pMercuryView != NULL )
+    if( _pMercuryView1 != NULL )
     {
         _Rect rcDraw(rect.origin.x, rect.origin.y, (rect.origin.x + rect.size.width), (rect.origin.y + rect.size.height));
-        _pMercuryView->OnPaint(context, rcDraw);
+        _pMercuryView1->OnPaint(context, rcDraw);
     }
     
     /*
