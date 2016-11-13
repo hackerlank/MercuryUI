@@ -10,6 +10,11 @@
 class MercuryBaseView;
 
 @interface NSWindowFrameView : NSView
+{
+@protected
+    MercuryBaseView* _pMercuryView;
+    MercuryBaseView* _pMercuryViewToDisplay;
+}
 
 -(void)initializeMercuryView:(NSRect)rcView wnd:(NSWindow*)wnd mercuryView:(MercuryBaseView*) pMercuryView;
 -(void)resizeEvent:(NSSize)frameSize;

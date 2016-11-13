@@ -3,14 +3,20 @@
 
 #include "PlatformCompat.h"
 
+#ifndef _Size
+#include "PlatformSize.h"
+#endif
+
 class _Rect : public RECTDef
 {
 public:
 	_Rect(){left = top = right = bottom = 0;};
+    _Rect(int ltrb){left = top = right = bottom = ltrb;};
 	_Rect(int l, int t, int r, int b){left = l; top = t; right = r; bottom = b;};
+    _Rect(int l, int t, const _Size size){left = l; top = t; right = l + size.cx; bottom = t + size.cy;};
 	_Rect(const RECTDef& rc){ left = rc.left; right = rc.right; top = rc.top; bottom = rc.bottom; };
 	_Rect(LPCRECTDef lprc){left = lprc->left; right = lprc->right; top = lprc->top; bottom = lprc->bottom;};
-	virtual ~_Rect(){};
+	//virtual ~_Rect(){};
 
 	// retrieves the width
 	int Width() const {return (right - left);};
@@ -41,9 +47,14 @@ public:
     };
 
 	// set rectangle from left, top, right, and bottom
-	void SetRect(int x1, int y1, int x2, int y2) { left = x1; right = x2; top = y1; bottom = y2; };
+	void SetRect(int l, int t, int r, int b) { left = l; right = r; top = t; bottom = b; };
+    void SetRect(int l, int t, int width, int height, bool widthHeight) { left = l; top = t; right = l + width; bottom = t + height; };
+    //void SetRect(int l, int t, _Size& size) { left = l; right = l + size.cx; top = t; bottom = t + size.cy; };
+    void SetRect(int l, int t, _Size size) { left = l; right = l + size.cx; top = t; bottom = t + size.cy; };
 
 	void SetRectEmpty() { left = 0; right = 0; top = 0; bottom = 0; };
+    
+    _Size Size(){ return _Size(Width(), Height()); };
 
 
 	void operator=(const RECTDef& srRect) { left = srRect.left; right = srRect.right; top = srRect.top; bottom = srRect.bottom; };

@@ -893,7 +893,6 @@ BOOL
 MercuryBaseView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 	ESFrameBase::OnKeyDown(nChar, nRepCnt, nFlags);
 
-    /*
 	// Designer mode. {{
 	if( m_bDesignerMode ){
 		if( GetSelectedCt() > 0 ){
@@ -923,10 +922,9 @@ MercuryBaseView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 		return 1;
 		}
 	// }}
-*/
-	if( m_pChildFocused && m_pChildFocused->IsVisible() ){
+    
+	if( m_pChildFocused && m_pChildFocused->IsVisible() )
 		m_pChildFocused->OnKeyDown(nChar, nRepCnt, nFlags);
-		}
 	return 1;
 	}
 

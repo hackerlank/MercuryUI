@@ -128,6 +128,9 @@ _DC::SetBkColor(COLORREF crBk){
                             green:((CGFloat)G_FROM_COLORREF(crBk)) / 255.0
                             blue:((CGFloat)B_FROM_COLORREF(crBk)) / 255.0
                             alpha:1.0/*((CGFloat)A_FROM_COLORREF(crBk)) / 255.0*/];
+    
+    if( _bkMode != TRANSPARENT )
+        [_fontAttributes setObject:_crFillColor forKey:NSBackgroundColorAttributeName];
 	}
 
 COLORREF
@@ -144,9 +147,13 @@ _DC::GetBkColor(){
 int
 _DC::SetBkMode(int nBkMode){
 	if( !_context ) return 0;
+    int oldMode = _bkMode;
     _bkMode = nBkMode;
+    
+    if( _bkMode == TRANSPARENT )
+        [_fontAttributes removeObjectForKey:NSBackgroundColorAttributeName];
 //	return ::SetBkMode(_context, nBkMode);
-    return 0;
+    return oldMode;
 	}
 
 int
@@ -344,7 +351,7 @@ _DC::ExtTextOut(int x, int y, UINT options, LPCRECTDef lprect, const char* pszTe
     [drawStr drawAtPoint:CGPointMake(x, y) withAttributes:_fontAttributes];
     //[drawStr drawInRect:CGRectMake(lprect->left, lprect->top, (lprect->right - lprect->left), (lprect->bottom - lprect->top)) withAttributes:_fontAttributes];
     [NSGraphicsContext restoreGraphicsState];
-    return FALSE;
+    return TRUE;
 	}
 
 BOOL

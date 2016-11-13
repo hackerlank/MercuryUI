@@ -54,11 +54,7 @@ ESChildTabView::Create(int nId, _Rect rRect, MercuryBaseView* pOwner, ESChildCon
 		nTabCtrlHeight *= fCY;
         
 		if( pOwner->AddChildControl(m_pTabCtrl, MercuryBaseView::GetChildControlIdUnused(m_pOwner), _Rect(0, 0, 0, nTabCtrlHeight), this) ){
-			_Rect rcFixedPos;
-			rcFixedPos.left		= m_nBorderWidth;
-			rcFixedPos.top		= m_nBorderWidth;
-			rcFixedPos.right	= m_nBorderWidth;
-			rcFixedPos.bottom	= -1;
+			_Rect rcFixedPos(m_nBorderWidth, m_nBorderWidth, m_nBorderWidth, -1);
             
 			m_pTabCtrl->SetSerializeFlag(false);
 			m_pTabCtrl->SetFixedPosition(rcFixedPos);
@@ -230,13 +226,7 @@ ESChildTabView::ActivateTabItem(int nIndex,  bool bRedraw /*= false*/){
 			_Rect rcControl		= GetClientRect();
 			rcControl.DeflateRect(m_nBorderWidth, m_nBorderWidth, m_nBorderWidth, m_nBorderWidth);
 			if( m_pOwner->AddChildControl(pTabControlsOwner, MercuryBaseView::GetChildControlIdUnused(m_pOwner), rcControl, this) ){
-				_Rect rcFixedPos;
-				rcFixedPos.left		= m_nBorderWidth;
-				rcFixedPos.top		= m_nBorderWidth;
-				rcFixedPos.right	= m_nBorderWidth;
-				rcFixedPos.bottom	= m_nBorderWidth;
-                
-				pTabControlsOwner->SetFixedPosition	(rcFixedPos);
+				pTabControlsOwner->SetFixedPosition	(_Rect(m_nBorderWidth));
 				pTabControlsOwner->SetVisible		(true, false);
 				m_pTabCtrl->SetItemParam			(nIndex, pTabControlsOwner);
             }

@@ -177,7 +177,10 @@ void
 ESChildControl::Redraw(bool bLayersToo /*= true*/){
 	if( !m_pOwner || !IsVisible() ) return;
 	if( m_bCreated && !m_rRect.IsRectEmpty() ){
-		if( bLayersToo )
+#ifdef __APPLE__
+        bLayersToo = true;
+#endif
+        if( bLayersToo )
 			m_pOwner->RedrawRect(m_rRect, 1);
 		else
 			m_pOwner->RedrawChildControl(this, m_rRect);
@@ -188,6 +191,9 @@ void
 ESChildControl::RedrawRect(_Rect rcRedraw, bool bLayersToo /*= true*/){
 	if( !m_pOwner ) return;
 	if( m_bCreated && !rcRedraw.IsRectEmpty() ){
+#ifdef __APPLE__
+        bLayersToo = true;
+#endif
 		if( bLayersToo ){
 			m_pOwner->RedrawRect(rcRedraw, 1);
 			}

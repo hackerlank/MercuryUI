@@ -11,9 +11,6 @@
 
 @interface NSWindowFrameView()
 {
-@protected
-    MercuryBaseView* _pMercuryView;
-    MercuryBaseView* _pMercuryViewToDisplay;
 }
 
 @end
@@ -50,6 +47,11 @@
     
     // Initialize mercury view.
     //[self initializeMercuryView:CGRectMake(0.0, 0.0, 0.0, 0.0) wnd:nil];
+}
+
+-(BOOL)acceptsFirstMouse:(nullable NSEvent *)event
+{
+    return YES;
 }
 
 -(void)initializeMercuryView:(NSRect)rcView wnd:(NSWindow*)wnd mercuryView:(MercuryBaseView*) pMercuryView;
@@ -95,8 +97,38 @@
         //_string designFile = _T("/Volumes/OSX/Users/ZqrTalent/Desktop/Dev/design/Lobby.des");
         //_string designFile = _T("/Volumes/OSX-DATA/Dev/ESPoker_06.01.2014/_bin/ESPokerClient_Debug/design/LoginDialog.des");
         //_pMercuryView->LoadFromDesignFile(designFile);
-        [self setNeedsDisplay:YES];
+        //[self setNeedsDisplay:YES];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(windowDidBecomeKey:)
+                                                     name:NSWindowDidBecomeKeyNotification
+                                                   object:_window];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(windowDidResignKey:)
+                                                     name:NSWindowDidResignKeyNotification
+                                                   object:_window];
+        
+        /*
+         [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeKeyNotification object:_window];
+         [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidResignKeyNotification object:_window];
+         */
     }
+}
+
+-(void)windowDidBecomeKey:(NSNotification *)notification
+{
+    NSLog(@"on set focus");
+    if(_pMercuryView)
+        _pMercuryView->OnSetFocus(nullptr);
+}
+
+-(void)windowDidResignKey:(NSNotification *)notification
+{
+    NSLog(@"on kill focus");
+    if(_pMercuryView)
+        _pMercuryView->OnKillFocus(nullptr);
+
 }
 
 -(void)resizeEvent:(NSSize)frameSize
@@ -187,6 +219,67 @@
      */
     
     //[_menu showMenu:theEvent forView:self];
+}
+
+-(BOOL)acceptsFirstResponder
+{
+    return YES;
+}
+
+-(void)keyDown:(NSEvent *)theEvent
+{
+    if ([theEvent modifierFlags] & NSNumericPadKeyMask) { // arrow keys have this mask
+        NSString *theArrow = [theEvent charactersIgnoringModifiers];
+        unichar keyChar = 0;
+        if ( [theArrow length] == 0 )
+            return;            // reject dead keys
+        if ( [theArrow length] == 1 ) {
+            keyChar = [theArrow characterAtIndex:0];
+            if ( keyChar == NSLeftArrowFunctionKey ) {
+                if(_pMercuryView)
+                    _pMercuryView->OnKeyDown(VK_LEFT, 1, 0);
+                return;
+            }
+            if ( keyChar == NSRightArrowFunctionKey ) {
+                if(_pMercuryView)
+                    _pMercuryView->OnKeyDown(VK_RIGHT, 1, 0);
+                return;
+            }
+            if ( keyChar == NSUpArrowFunctionKey ) {
+                if(_pMercuryView)
+                    _pMercuryView->OnKeyDown(VK_UP, 1, 0);
+                return;
+            }
+            if ( keyChar == NSDownArrowFunctionKey ) {
+                if(_pMercuryView)
+                    _pMercuryView->OnKeyDown(VK_DOWN, 1, 0);
+                return;
+            }
+        }
+    }
+
+    // VK_HOME
+    // VK_BACK
+    
+    NSLog(@"%d", theEvent.keyCode);
+    NSLog(@"%d", theEvent.characters);
+    
+    [super keyDown:theEvent];
+    /*
+    if(theEvent.keyCode == NSUpArrowFunctionKey)
+    {
+        NSLog(@"up");
+    }
+    
+    if(theEvent.keyCode == NSDownArrowFunctionKey)
+    {
+        NSLog(@"down");
+    }
+    
+    if(_pMercuryView)
+        _pMercuryView->OnKeyDown(theEvent.keyCode, 1, 0);
+    */
+    //[self interpretKeyEvents:[NSArray arrayWithObject:theEvent]];
 }
 
 -(void)mouseUp:(NSEvent *)theEvent

@@ -2462,7 +2462,7 @@ Serializable::SetVariableFromString_Rect(Serializable* pThis, VariableInfo* pInf
 	ASSERT(pInfo);
 	int		nOffset = pInfo->m_nOffset;
 	_Rect*	varPtr	= (_Rect*)&((LPBYTE)pThis)[nOffset];
-	_Rect	rcFormated(0, 0, 0, 0);
+	_Rect	rcFormated;
 	if( pInfo->m_type == VariableType::VT_Rect ){
 		// left
 		rcFormated.left = std::stoi(&((TCHAR*)sValue.c_str())[0]);

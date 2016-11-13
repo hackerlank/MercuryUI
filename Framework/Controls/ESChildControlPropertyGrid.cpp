@@ -480,8 +480,7 @@ ESChildControlPropertyGrid::DeletePropertyItem(ESPropertyGridItem* pItem){
 
 int
 ESChildControlPropertyGrid::GetVisibleItemCt(){
-	int					nCt			= 0;
-	int					nParentCt	= 0;
+	int					nCt			= 0, nParentCt	= 0;
 	ESPropertyGridItem* pItem		= GetNextVisibleItem(m_pRootItem, nParentCt);
 	while( pItem ){
 		pItem = GetNextVisibleItem(pItem, nParentCt); nCt ++;
@@ -491,9 +490,7 @@ ESChildControlPropertyGrid::GetVisibleItemCt(){
 
 void
 ESChildControlPropertyGrid::CalcTopItem(){
-	int					nPos		= m_pVScroll->IsVisible() ? m_pVScroll->GetScrollPos() : 0;
-	int					nCt			= 0;
-	int					nParentCt	= 0;
+	int					nPos		= m_pVScroll->IsVisible() ? m_pVScroll->GetScrollPos() : 0, nCt	= 0, nParentCt = 0;
 	ESPropertyGridItem* pItem		= GetNextVisibleItem(m_pRootItem, nParentCt);
 	while( pItem ){
 		nPos	-= m_nItemCY;

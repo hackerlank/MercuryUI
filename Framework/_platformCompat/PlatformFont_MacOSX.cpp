@@ -104,7 +104,8 @@ _Font::GetTextSize(_string* pStr, _Size& szText){
 	//if( IsNull() )
 	//	return FALSE;
     
-    NSString* str = [NSString stringWithCharacters:(const unichar*)pStr->c_str() length:pStr->length()];
+   // NSString* str = [NSString stringWithCharacters:(const unichar*)pStr->c_str() length:pStr->length()];
+    NSString* str = [NSString stringWithCString:pStr->c_str() encoding:NSUTF8StringEncoding];
     NSSize sz = [str sizeWithAttributes:_attributes];
     
     szText.cx = sz.width;
@@ -117,11 +118,12 @@ _Font::GetSymbolIndexByXOffset(_string* pStr, int nXTextStart, int nXSymbolAt){
 	if( IsNull() || !pStr || !pStr->length() )
 		return -1;
     
-    NSString*           str = [NSString stringWithCharacters:(const unichar*)(pStr->c_str()) length:pStr->length()];
+    //NSString*           str = [NSString stringWithCharacters:(const unichar*)(pStr->c_str()) length:pStr->length()];
+    NSString*           str = [NSString stringWithCString:pStr->c_str() encoding:NSUTF8StringEncoding];
 	_Size				szText(0, 0);
 	int					nRet = -1;
     int                 nLen = (int)str.length;
-    NSRange range;
+    NSRange range = NSMakeRange(0, 1);
 
 	for(int i=0; i<nLen; i++){
         range.location = i;
@@ -150,11 +152,12 @@ _Font::GetSymbolWidthArray(_string* pStr, CDWordArray& arrSymbolWidth){
 	if( IsNull() || !pStr || !pStr->length() )
 		return 0;
 
-	NSString*           str = [NSString stringWithCharacters:(const unichar*)(pStr->c_str()) length:pStr->length()];
+	//NSString*           str = [NSString stringWithCharacters:(const unichar*)(pStr->c_str()) length:pStr->length()];
+    NSString*           str = [NSString stringWithCString:pStr->c_str() encoding:NSUTF8StringEncoding];
 	_Size				szText(0, 0);
 	int					nRet = -1;
     int                 nLen = (int)str.length;
-    NSRange range;
+    NSRange range = NSMakeRange(0, 1);
 
 	for(int i=0; i<nLen; i++){
 		NSSize sz = [[str substringWithRange:range] sizeWithAttributes:_attributes];
@@ -162,6 +165,7 @@ _Font::GetSymbolWidthArray(_string* pStr, CDWordArray& arrSymbolWidth){
         szText.cy = sz.height;
         
 		arrSymbolWidth.push_back(szText.cx);
+        range.location ++;
 		nRet ++;
 		}
 	return nRet;

@@ -13,6 +13,7 @@
 #include "_PlatformCompat/PlatformDeviceContext.h"
 #include "Utility/GrowableMemory.h"
 #include "_PlatformCompat/PlatformUIMenu.h"
+#include "Controls/ESChildTextBox.h"
 
 @interface NSViewMy()
 {
@@ -45,6 +46,17 @@
     
     // Initialize mercury view.
     [self initializeMercuryView:CGRectMake(0.0, 0.0, 0.0, 0.0) wnd:nil mercuryView:nullptr];
+    
+    if(_pMercuryView)
+    {
+        auto pTextBox = new ESChildTextBox();
+        pTextBox->AllowMouseEvents(true);
+        pTextBox->SetText("Hello there !!!\r\nHello There !!!");
+        pTextBox->SetMultiLine(true);
+        pTextBox->SetSel(0, 3, true, false);
+        _Rect rcRect(0, 0, 200, 200);
+        _pMercuryView->AddChildControl(pTextBox, 10000, rcRect, nullptr);
+    }
 }
 
 -(void)initializeMercuryView1:(NSRect)rcView wnd:(NSWindow*)wnd

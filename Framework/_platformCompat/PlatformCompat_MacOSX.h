@@ -134,6 +134,7 @@ typedef struct tagBITMAP {
 #define FW_BOLD 500
 
 #define TRANSPARENT 1 // Transparent backgrount mode
+#define OPAQUE 2
 #define ETO_CLIPPED 1 // ExtTextOut mode
 #define IDC_HAND 1001 
 
@@ -168,6 +169,12 @@ typedef struct tagBITMAP {
 #define VK_RCONTROL 6
 #define VK_LSHIFT 7
 #define VK_RSHIFT 8
+#define VK_LEFT 9
+#define VK_RIGHT 10
+#define VK_BACK 11
+#define VK_DELETE 12
+#define VK_HOME 13
+#define VK_END 14
 
 #define MK_LBUTTON 1 //Mouse state
 #define MK_CONTROL 2

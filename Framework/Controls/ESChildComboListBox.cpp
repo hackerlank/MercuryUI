@@ -158,31 +158,17 @@ ESChildComboListBox::SetTextFont(_Font* pTextFont, bool bRedraw){
 
 void
 ESChildComboListBox::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClient){
-    _Rect rcControlDC, rcInvalid;
-    rcControlDC.left	= (m_rRect.left - pRectClient->left) + pRectDC->left;
-    rcControlDC.top		= (m_rRect.top - pRectClient->top) + pRectDC->top;
-    rcControlDC.right	= rcControlDC.left + m_rRect.Width();
-    rcControlDC.bottom	= rcControlDC.top + m_rRect.Height();
+    _Rect rcControlDC((m_rRect.left - pRectClient->left) + pRectDC->left, (m_rRect.top - pRectClient->top) + pRectDC->top, m_rRect.Size()), rcInvalid;
     
     ESChildScrollView::OnPaintClient(pDC, pRectDC, pRectClient);
     
-    _Rect rcFrameDC;
-    rcFrameDC.left		= rcControlDC.left + m_nBorderWidth;
-    rcFrameDC.top		= rcControlDC.top + m_nBorderWidth;
-    rcFrameDC.right		= rcControlDC.right - m_nBorderWidth;
-    rcFrameDC.bottom	= rcControlDC.bottom - m_nBorderWidth;
-    
+    _Rect rcFrameDC(rcControlDC.left + m_nBorderWidth, rcControlDC.top + m_nBorderWidth, rcControlDC.right - m_nBorderWidth, rcControlDC.bottom - m_nBorderWidth);
     m_nTopOffset		= 0;//m_pVScroll->IsVisible() ? m_pVScroll->GetScrollPos()%m_nItemHeight : 0;
     m_nTopIndex			= m_pVScroll->IsVisible() ? m_pVScroll->GetScrollPos()/m_nItemHeight : 0;
     
-    _Rect rcItemDC;
-    rcItemDC.left		= rcFrameDC.left;
-    rcItemDC.top		= rcFrameDC.top - m_nTopOffset;
-    rcItemDC.right		= rcFrameDC.right;
-    rcItemDC.bottom		= rcItemDC.top + m_nItemHeight;
+    _Rect rcItemDC(rcFrameDC.left, rcFrameDC.top - m_nTopOffset, rcFrameDC.right, (rcFrameDC.top - m_nTopOffset) + m_nItemHeight);
     
-    int		nLoop		= m_nTopIndex;
-    int		nCt			= m_content.GetCount();
+    int		nLoop = m_nTopIndex, nCt = m_content.GetCount();
     _Size	szText;
     _Font*	pFontOld	= pDC->SelectObject(&m_textFont);
     
@@ -283,10 +269,7 @@ ESChildComboListBox::GetItemRect(int nItem, _Rect& rcItem){
 	if( nItem < m_nTopIndex || nItem >= m_content.GetCount() )
 		return false;
 
-	rcItem.left		= m_rRect.left + m_nBorderWidth;
-	rcItem.top		= m_rRect.top + m_nBorderWidth - m_nTopOffset;
-	rcItem.right	= m_rRect.right - m_nBorderWidth - (m_pVScroll->IsVisible() ? m_pVScroll->GetClientWidth() : 0);
-	rcItem.bottom	= rcItem.top + m_nItemHeight;
+    rcItem.SetRect(m_rRect.left + m_nBorderWidth, m_rRect.top + m_nBorderWidth - m_nTopOffset, m_rRect.right - m_nBorderWidth - (m_pVScroll->IsVisible() ? m_pVScroll->GetClientWidth() : 0), (m_rRect.top + m_nBorderWidth - m_nTopOffset) + m_nItemHeight);
 
 	int nLoop = m_nTopIndex;
 	while( nLoop < m_content.GetCount() ){

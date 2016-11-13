@@ -101,12 +101,8 @@ ESChildAvatar::Destroy(){
 
 void
 ESChildAvatar::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClient){
-	_Rect rcClient				= GetClientRect();
-	_Rect rcControlDC;
-	rcControlDC.left			= (rcClient.left - pRectClient->left) + pRectDC->left;
-	rcControlDC.top				= (rcClient.top - pRectClient->top) + pRectDC->top;
-	rcControlDC.right			= rcControlDC.left + rcClient.Width();
-	rcControlDC.bottom			= rcControlDC.top + rcClient.Height();
+	_Rect rcClient = GetClientRect();
+	_Rect rcControlDC((rcClient.left - pRectClient->left) + pRectDC->left, (rcClient.top - pRectClient->top) + pRectDC->top, rcClient.Size());
 
 	// Draw avatar image.
 	if( m_pImageAvatar && !m_pImageAvatar->IsNull() )

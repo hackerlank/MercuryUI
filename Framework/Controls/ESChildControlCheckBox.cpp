@@ -141,12 +141,7 @@ ESChildControlCheckBox::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClie
 	if( pImage && !pImage->IsNull() ){
 		szImage.SetSize(pImage->GetWidth()*fZoomCX, pImage->GetHeight()*fZoomCY);
 		
-		_Rect rcCheckBox;
-		rcCheckBox.left		= rcClient.left + 2;
-		rcCheckBox.top		= rcClient.top + (rcClient.Height() - szImage.cy)/2;
-		rcCheckBox.right	= rcCheckBox.left + szImage.cx;
-		rcCheckBox.bottom	= rcCheckBox.top + szImage.cy;
-
+		_Rect rcCheckBox(rcClient.left + 2, rcClient.top + (rcClient.Height() - szImage.cy)/2, szImage);
 		m_pOwner->DrawBackground(pDC, pRectDC, pRectClient, rcCheckBox, _FillMode::FillMode_StretchImage, RGB(0, 0, 0), pImage, _Rect(0, 0, 0, 0), false, ScaleMode::ScaleMode_Bilinier);
 		rcClient.left		= rcCheckBox.right + 4;
 		}

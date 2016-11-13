@@ -136,11 +136,7 @@ ESChildComboBox::CalcButtonRect(){
 	MercuryGUI* pGUI		= MercuryGUI::GetInstance();
 	int			nCX			= pGUI->comboBox.m_imgComboButton.GetWidth();
 	int			nCY			= pGUI->comboBox.m_imgComboButton.GetHeight();
-
-	m_rcBoxButton.left		= m_rRect.right - nCX - 2;
-	m_rcBoxButton.top		= m_rRect.top + (m_rRect.Height() - nCY)/2;
-	m_rcBoxButton.right		= m_rcBoxButton.left + nCX;
-	m_rcBoxButton.bottom	= m_rcBoxButton.top + nCY;
+    m_rcBoxButton.SetRect(m_rRect.right - nCX - 2, m_rRect.top + (m_rRect.Height() - nCY)/2, _Size(nCX, nCY));
 	}
 
 bool
@@ -197,13 +193,8 @@ ESChildComboBox::GetItemText(int nIndex /*= -1*/){
 void
 ESChildComboBox::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClient){
 	MercuryGUI* pMerGUI		= MercuryGUI::GetInstance();
+	_Rect		rcBoxDC((m_rcBoxButton.left - pRectClient->left) + pRectDC->left, (m_rcBoxButton.top - pRectClient->top) + pRectDC->top, m_rcBoxButton.Size()), rcInvalid;
 	
-	_Rect		rcBoxDC, rcInvalid;
-	rcBoxDC.left			= (m_rcBoxButton.left - pRectClient->left) + pRectDC->left; 
-	rcBoxDC.top				= (m_rcBoxButton.top - pRectClient->top) + pRectDC->top; 
-	rcBoxDC.right			= rcBoxDC.left + m_rcBoxButton.Width(); 
-	rcBoxDC.bottom			= rcBoxDC.top + m_rcBoxButton.Height();
-
 	_Image*				pImageBox	= m_pListBox ? &pMerGUI->comboBox.m_imgComboButtonActive : &pMerGUI->comboBox.m_imgComboButton;
 	ESLocalizationMan*	pMan		=  ESLocalizationMan::GetInstance();
 
@@ -366,13 +357,9 @@ ESChildComboBox::ShowListBox(bool bHide /*= false*/){
 			nListBoxHeight = nItems*nItemCY;
 			}
 
-		_Rect rcListBox;
-		rcListBox.left		= m_rRect.left;
-		rcListBox.top		= m_rRect.bottom + 1;
-		rcListBox.right		= m_rRect.right;
-		rcListBox.bottom	= rcListBox.top + nListBoxHeight;
-
+		_Rect rcListBox(m_rRect.left, m_rRect.bottom + 1, m_rRect.right, (m_rRect.bottom + 1) + nListBoxHeight);
 		_Rect rcOwner;
+        
 		if( !m_pParent )
 			m_pOwner->GetClientRectMy(rcOwner);
 		else

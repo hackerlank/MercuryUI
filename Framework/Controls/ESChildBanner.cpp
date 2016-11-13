@@ -275,21 +275,14 @@ ESChildBanner::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClient){
 	rImage1 &= rImageArea;
 	rImage2 &= rImageArea;
 	
-	_Rect	rImageDC, rcInvalid;
+	_Rect	rImageDC((rImage1.left - pRectClient->left) + pRectDC->left, (rImage1.top - pRectClient->top) + pRectDC->top, rImage1.Size()), rcInvalid;
 	// Draw images. {{
-	rImageDC.left		= (rImage1.left - pRectClient->left) + pRectDC->left; 
-	rImageDC.top		= (rImage1.top - pRectClient->top) + pRectDC->top; 
-	rImageDC.right		= rImageDC.left + rImage1.Width(); 
-	rImageDC.bottom	= rImageDC.top + rImage1.Height(); 
-
-	rcInvalid	= rImageDC & *pRectDC;
+    
+    rcInvalid	= rImageDC & *pRectDC;
 	if( !rcInvalid.IsRectEmpty() )
 		pImage1->RenderImage(pDC, rcInvalid, rImageDC, false);
-
-	rImageDC.left		= (rImage2.left - pRectClient->left) + pRectDC->left; 
-	rImageDC.top		= (rImage2.top - pRectClient->top) + pRectDC->top; 
-	rImageDC.right		= rImageDC.left + rImage2.Width(); 
-	rImageDC.bottom	= rImageDC.top + rImage2.Height(); 
+    rImageDC.SetRect((rImage2.left - pRectClient->left) + pRectDC->left, (rImage2.top - pRectClient->top) + pRectDC->top, rImage2.Size());
+    
 	rcInvalid	= rImageDC & *pRectDC;
 	if( !rcInvalid.IsRectEmpty() )
 		pImage2->RenderImage(pDC, rcInvalid, rImageDC, false);
@@ -297,18 +290,10 @@ ESChildBanner::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClient){
 
 	// Draw switch buttons. {{
 	if( nImageCt > 1 && !m_imageSwitchButtonNormal.IsNull() && !m_imageSwitchButtonClick.IsNull() ){
-		_Rect rcButtons;
-		rcButtons.left		= m_rcSwitchButtonsBound.left;
-		rcButtons.top		= m_rcSwitchButtonsBound.top;
-		rcButtons.right		= rcButtons.left + m_szSwitchButton.cx;
-		rcButtons.bottom	= rcButtons.top + m_szSwitchButton.cy;
+		_Rect rcButtons(m_rcSwitchButtonsBound.left, m_rcSwitchButtonsBound.top, m_szSwitchButton);
 
 		for(int i=0; i<nImageCt; i++){
-			rImageDC.left		= (rcButtons.left - pRectClient->left) + pRectDC->left; 
-			rImageDC.top		= (rcButtons.top - pRectClient->top) + pRectDC->top; 
-			rImageDC.right		= rImageDC.left + m_szSwitchButton.cx; 
-			rImageDC.bottom	= rImageDC.top + m_szSwitchButton.cy; 
-
+            rImageDC.SetRect((rcButtons.left - pRectClient->left) + pRectDC->left, (rcButtons.top - pRectClient->top) + pRectDC->top, m_szSwitchButton);
 			rcInvalid	= rImageDC & *pRectDC;
 			if( !rcInvalid.IsRectEmpty() )
 				((i != m_nCurrentImage) ? &m_imageSwitchButtonNormal : &m_imageSwitchButtonClick)->RenderImage(pDC, rcInvalid, rImageDC, false);
