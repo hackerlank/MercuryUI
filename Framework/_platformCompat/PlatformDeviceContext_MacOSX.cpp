@@ -171,18 +171,51 @@ _DC::GetDeviceCaps(int index){
     return 0;
 	}
 
+void
+_DC::FillRectWithBorderRadius(RECTDef* pRect, int nBorderWidth, int nBorderHeight, COLORREF crFill, COLORREF* pCrBorder /*= NULL*/, int nBorderLineSize /*= 1*/){
+    if( !_context )
+        return ;
+    
+    CGContextRef context = [_context CGContext];
+    
+    CGContextSetRGBFillColor(context,
+                             ((CGFloat)R_FROM_COLORREF(crFill))/255.0,
+                             ((CGFloat)G_FROM_COLORREF(crFill))/255.0,
+                             ((CGFloat)B_FROM_COLORREF(crFill))/255.0,
+                             1.0/*((CGFloat)A_FROM_COLORREF(crFill))/255.0*/);
+    
+    
+    CGPathRef path = CGPathCreateWithRoundedRect(CGRectMake((CGFloat)pRect->left, (CGFloat)pRect->top,
+                                                            (CGFloat)(pRect->right - pRect->left), (CGFloat)(pRect->bottom - pRect->top)),
+                                                 nBorderWidth, nBorderHeight, NULL);
+    
+    if(pCrBorder){
+        CGContextSetRGBStrokeColor(context, ((CGFloat)R_FROM_COLORREF(*pCrBorder))/255.0,
+                                   ((CGFloat)G_FROM_COLORREF(*pCrBorder))/255.0,
+                                   ((CGFloat)B_FROM_COLORREF(*pCrBorder))/255.0,
+                                   1.0);
+    }
+    
+    CGContextAddPath(context, path);
+    CGContextDrawPath(context, kCGPathEOFillStroke);
+    CGContextClosePath(context);
+    CGPathRelease(path);
+    }
+
 int
 _DC::FillSolidRect(RECTDef* pRect, COLORREF crFillColor){
 	if( !_context )
         return 0;
     
-    CGContextSetRGBFillColor([_context CGContext],
+    CGContextRef context = [_context CGContext];
+    
+    CGContextSetRGBFillColor(context,
                              ((CGFloat)R_FROM_COLORREF(crFillColor))/255.0,
                              ((CGFloat)G_FROM_COLORREF(crFillColor))/255.0,
                              ((CGFloat)B_FROM_COLORREF(crFillColor))/255.0,
                              1.0/*((CGFloat)A_FROM_COLORREF(crFillColor))/255.0*/);
     
-    CGContextFillRect([_context CGContext], CGRectMake((CGFloat)pRect->left, (CGFloat)pRect->top,
+    CGContextFillRect(context, CGRectMake((CGFloat)pRect->left, (CGFloat)pRect->top,
                                            (CGFloat)(pRect->right - pRect->left), (CGFloat)(pRect->bottom - pRect->top)));
     return 1;
 	}

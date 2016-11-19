@@ -119,22 +119,23 @@ _Font::GetSymbolIndexByXOffset(_string* pStr, int nXTextStart, int nXSymbolAt){
 		return -1;
     
     //NSString*           str = [NSString stringWithCharacters:(const unichar*)(pStr->c_str()) length:pStr->length()];
-    NSString*           str = [NSString stringWithCString:pStr->c_str() encoding:NSUTF8StringEncoding];
-	_Size				szText(0, 0);
-	int					nRet = -1;
-    int                 nLen = (int)str.length;
-    NSRange range = NSMakeRange(0, 1);
+    NSString*   str = [NSString stringWithCString:pStr->c_str() encoding:NSUTF8StringEncoding];
+	NSSize		szText = CGSizeMake(0.0, 0.0);
+	int			nRet = -1;
+    int         nLen = (int)str.length;
+    NSRange     range = NSMakeRange(0, 1);
+    float       xTextStart = (float)nXTextStart;
 
 	for(int i=0; i<nLen; i++){
         range.location = i;
         
         NSSize sz = [[str substringWithRange:range] sizeWithAttributes:_attributes];
-        szText.cx = sz.width;
-        szText.cy = sz.height;
-		nXTextStart += szText.cx;
+        szText.width = sz.width;
+        szText.height = sz.height;
+		xTextStart += szText.width;
 
-		if( nXSymbolAt <= nXTextStart ){
-			if( nXSymbolAt <= (nXTextStart - szText.cx/2) )
+		if( nXSymbolAt <= xTextStart ){
+			if( nXSymbolAt <= (xTextStart - szText.width/2) )
 				nRet = i;
 			else
 				nRet = i + 1;
@@ -142,9 +143,7 @@ _Font::GetSymbolIndexByXOffset(_string* pStr, int nXTextStart, int nXSymbolAt){
 			}
 		}
 
-	if( nXSymbolAt > nXTextStart )
-		nRet = (int)(nLen - 1);
-	return nRet;
+    return nXSymbolAt > xTextStart ? (int)(nLen - 1) : nRet;
 	}
 
 int

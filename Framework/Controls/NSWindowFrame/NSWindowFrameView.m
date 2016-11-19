@@ -64,7 +64,7 @@
         
         _pMercuryView = pMercuryView == NULL ? new MercuryBaseView() : pMercuryView;
         _pMercuryView->SetHWND(self);
-        _pMercuryView->SetDesignerMode(true);
+        _pMercuryView->SetDesignerMode(false);
         _pMercuryViewToDisplay = NULL;
         
         /*

@@ -376,7 +376,7 @@ Serializable::GenerateSourceCodeInAS3(StringToStringArray& arrSourceCodeByFileNa
 		_string sSourceCodePackage;
 		for(UINT i=0; i<arrLines.size(); i++)
 			sSourceCodePackage += arrLines[i];
-		arrLines.empty();
+		arrLines.clear();
 
 		// Add package.
 		arrSourceCodeByFileName.Add(info->m_sAttributeName, sSourceCodePackage);

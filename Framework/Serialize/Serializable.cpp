@@ -3124,7 +3124,7 @@ Serializable::ReadVariableFromBuffer_String(Serializable* pThis, VariableInfo* p
 		if( !pMem->ReadInt8(&cType) || REMOVE_DEFAULT_VALUE_TYPE(cType) != (char)VariableType::VT_String )
 			return false;
 		if( IS_DEFAULT_VALUE_TYPE(cType) ){
-			((_string*)varPtr)->empty();
+			((_string*)varPtr)->clear();
 			return true;
 			}
 		return pMem->ReadString((_string*)varPtr);

@@ -46,6 +46,8 @@ public:
 	int			FillSolidRect				(RECTDef* pRect, COLORREF crFillColor);
 	void		DrawFocusRect				(RECTDef* pRect);
 	void		DrawPath					(RECTDef* pRect, int nLineWidth, COLORREF crPath);
+    
+    void		FillRectWithBorderRadius	(RECTDef* pRect, int nBorderWidth, int nBorderHeight, COLORREF crFill, COLORREF* pCrBorder = NULL, int nBorderLineSize = 1);
 
 	BOOL		ExtTextOut					(int x, int y, UINT options, LPCRECTDef lprect, const char* pszText, const int * lpDx = NULL);
 	BOOL		ExtTextOutW					(int x, int y, UINT options, LPCRECTDef lprect, const wchar_t* lpString, const int * lpDx = NULL);

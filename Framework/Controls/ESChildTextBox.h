@@ -128,7 +128,7 @@ protected:
 	COLORREF				m_crSelectedTextBg;		// Selected text background color.
 	
 	_Font					m_alternateTextFont;	// Alternate text font.
-	_string				m_sAlternateText;		// Alternate text.
+	_string                 m_sAlternateText;		// Alternate text.
 	COLORREF				m_crAlternateText;		// Alternate Text color.
 
 	float					m_fZoomCX;

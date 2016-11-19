@@ -33,7 +33,6 @@ protected:
 	AutoSortedArray									m_arrLayerByIndex;			// Layer by index.
 	AutoSortedArray									m_arrExcludedControl;		// <ESChildControl*>
 	CriticalSection                                 m_lock;
-    void*   m_pTemp;
 };
 
 class MercuryLayer
@@ -51,5 +50,4 @@ public:
 protected:
 	int					m_nLayerIndex;
 	AutoSortedArray		m_arrChildControlById;
-    void* m_pTemp;
 };

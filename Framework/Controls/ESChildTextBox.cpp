@@ -355,26 +355,14 @@ ESChildTextBox::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClient){
 	else{
 		// Fill background.
 		rcInvalid = *pRectDC&rcControlDC;
-		if( !rcInvalid.IsRectEmpty() )
-			pDC->FillSolidRect(rcInvalid, m_crFill);
-		// Draw border. {{
-		_Rect rcFrameDC = rcControlDC;
-	//	rcFrameDC.DeflateRect(1, 1);
-		/*
-		CPen penBorder(PS_SOLID, 1, m_crBorder);
-		CPen* penOld = pDC->SelectObject(&penBorder);
-		pDC->MoveTo(rcFrameDC.left, rcFrameDC.top);
-		pDC->LineTo(rcFrameDC.right - 1, rcFrameDC.top);
-		pDC->LineTo(rcFrameDC.right - 1, rcFrameDC.bottom - 1);
-		pDC->LineTo(rcFrameDC.left, rcFrameDC.bottom - 1);
-		pDC->LineTo(rcFrameDC.left, rcFrameDC.top);
-		pDC->SelectObject(penOld);*/
-		pDC->DrawPath(rcFrameDC, 1, m_crBorder);
-		// }}
-		}
+        if( !rcInvalid.IsRectEmpty() ){
+			//pDC->FillSolidRect(rcInvalid, m_crFill);
+            pDC->FillRectWithBorderRadius(rcControlDC, 6, 6, m_crFill, &m_crBorder, 1);
+        }
+    }
 
 	// Draw text. {{
-	_Rect	rcText		 = GetTextAreaRect();
+	_Rect	rcText = GetTextAreaRect();
 	_Rect	rcTextAreaDC((rcText.left - pRectClient->left) + pRectDC->left, (rcText.top - pRectClient->top) + pRectDC->top, rcText.Size());
 	
 	_Point	ptText(0, 0);
@@ -461,7 +449,7 @@ ESChildTextBox::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClient){
 				else
 					sAfterSel = sLine;
 				}
-			else
+			else // No selection.
 				sBeforeSel = sLine;
 
 			int nLeft = rcLineDC.left;
@@ -471,7 +459,7 @@ ESChildTextBox::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClient){
 				pDC->SetTextColor	(m_crText);
 				if( ExtTextOutMy(pDC, ptText.x, ptText.y, ETO_CLIPPED, (rcTextAreaDC&*pRectDC), sBeforeSel) )
 					rcLineDC.left	+= (szText.cx + nDistanceBetweenSymbols);
-				sBeforeSel.empty();
+				sBeforeSel.erase();
 				}
 
 			if( GetTextSize(&sSel, &m_textFont, szText) ){
@@ -481,7 +469,7 @@ ESChildTextBox::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClient){
 				pDC->SetBkColor		(m_crSelectedTextBg);
 				if( ExtTextOutMy(pDC, ptText.x, ptText.y, ETO_CLIPPED, (rcTextAreaDC&*pRectDC), sSel) )
 					rcLineDC.left	+= (szText.cx + nDistanceBetweenSymbols);
-				sSel.empty();
+				sSel.erase();
 				}
 
 			if( GetTextSize(&sAfterSel, &m_textFont, szText) ){
@@ -490,7 +478,7 @@ ESChildTextBox::OnPaintClient(_DC *pDC, _Rect* pRectDC, _Rect* pRectClient){
 				pDC->SetTextColor	(m_crText);
 				if( ExtTextOutMy(pDC, ptText.x, ptText.y, ETO_CLIPPED, (rcTextAreaDC&*pRectDC), sAfterSel) )
 					rcLineDC.left += (szText.cx + nDistanceBetweenSymbols);
-				sAfterSel.empty();
+				sAfterSel.erase();
 				}
 
 			rcLineDC.left	= nLeft;
@@ -946,7 +934,7 @@ ESChildTextBox::GetTextAreaRect(){
 	int nTextHeight		= min(rcTextArea.Height(), m_nTextLineHeight);
 	if( m_bMultiLine )
 		rcTextArea.left		+= 2;
-	else{
+	else{ // Vertical centered text.
 		rcTextArea.top		= rcTextArea.top + (rcTextArea.Height() - nTextHeight)/2;
 		rcTextArea.bottom	= rcTextArea.top + nTextHeight;
 		rcTextArea.left		+= 2;
@@ -1000,10 +988,7 @@ ESChildTextBox::GetCursorIndexByPoint(_Point pt, int& nLineIndex){
 	int		nOffsetX	=  rcTextArea.left;
 	_string strVisible	= sLine.substr(m_nLeftIndex, sLine.length() - m_nLeftIndex);
 	nCursorIndex		= GetSymbolIndexByXOffset(&strVisible, &m_textFont, nOffsetX, pt.x) + m_nLeftIndex;
-	
-	if( nCursorIndex == -1 )
-		nCursorIndex = max((m_nLeftIndex - 1), -1);
-	return nCursorIndex;
+    return nCursorIndex == -1 ? max((m_nLeftIndex - 1), -1) : nCursorIndex;
 	}
 
 bool
@@ -1265,7 +1250,7 @@ ESChildTextBox::GetLineSymbolCt(int nLine){
 bool
 ESChildTextBox::GetLineString(int nLine, _string& sLine){
 	if( nLine < 0 || nLine > m_arrTextLines.size() ){
-		sLine.empty();
+		sLine.erase();
 		return false;
 		}
 	if( nLine == m_arrTextLines.size() && !nLine )
@@ -1414,10 +1399,10 @@ ESChildTextBox::GetCursorRect(_Rect& rcCursor){
 	// }}
 
 	if( GetTextRect(nLine, nSymbolIndex, nSymbolIndex + 1, rRect) ){
-		if( nSymbolIndex >= nSymbolCt - 1 )
+		//if( nSymbolIndex >= nSymbolCt - 1 )
             rcCursor.SetRect(rRect.left, rRect.top, rRect.left + m_nCursorWidth, rRect.bottom);
-		else
-            rcCursor.SetRect(rRect.left - m_nCursorWidth, rRect.top, rRect.left, rRect.bottom);
+		//else
+        //    rcCursor.SetRect(rRect.left - m_nCursorWidth, rRect.top, rRect.left, rRect.bottom);
 		return true;
 		}
 
@@ -1862,6 +1847,8 @@ ESChildTextBox::GetTextSize(_string* pStr, _Font* pFont, _Size& szText){
 		if( pStr->at(i) != '\r' && pStr->at(i) != '\n' )
 			nCt ++;
 		}
+    if(nCt == 0)
+        return bRet;
 
 	if( m_bPassword ){
 		_Size	szSymbol(0, 0);

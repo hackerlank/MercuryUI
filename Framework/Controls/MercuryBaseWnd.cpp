@@ -2411,7 +2411,7 @@ MercuryBaseView::ActivateTooltip(const TCHAR* pszTipText){
 	_string sTip = pszTipText;
 	CStringArray arrStrings;
 	StringHelper::Split(&sTip, _T("\\r\\n"), arrStrings);
-	sTip.empty();
+	sTip.clear();
 	for(int i=0; i<arrStrings.size(); i++){
 		sTip += arrStrings.at(i);
 		if( i != arrStrings.size() -1 ){

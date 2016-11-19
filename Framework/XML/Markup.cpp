@@ -101,9 +101,9 @@ bool CMarkup::SetDoc( LPCTSTR szDoc )
 	if ( szDoc )
 		m_strDoc = szDoc;
 	else
-		m_strDoc.empty();
+		m_strDoc.clear();
 
-	m_strError.empty();
+	m_strError.clear();
 	return x_ParseDoc();
 };
 
@@ -546,7 +546,7 @@ bool CMarkup::x_ParseDoc()
 
 	// Parse document
 	bool bWellFormed = false;
-	m_strError.empty();
+	m_strError.clear();
 	if ( m_strDoc.length() ){
 		TokenPos token( m_strDoc.c_str() );
 		m_aPos[0].ClearVirtualParent();

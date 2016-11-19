@@ -54,7 +54,7 @@
         pTextBox->SetText("Hello there !!!\r\nHello There !!!");
         pTextBox->SetMultiLine(true);
         pTextBox->SetSel(0, 3, true, false);
-        _Rect rcRect(0, 0, 200, 200);
+        _Rect rcRect(5, 5, 200, 200);
         _pMercuryView->AddChildControl(pTextBox, 10000, rcRect, nullptr);
     }
 }

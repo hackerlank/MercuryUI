@@ -55,7 +55,7 @@ BufferedString::ReleaseBuffer(int nNewLen /*= -1*/){
 			memcpy((void*)c_str(), m_pBuffer, nNewLen);
 			}
 		else{
-			empty();
+			clear();
 			}
 
 		delete [] m_pBuffer;

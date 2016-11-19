@@ -20,17 +20,17 @@ ESTabCtrlItemInfo::ESTabCtrlItemInfo(){
     }
 
 BEGIN_DECLARE_VAR(ESTabCtrlItemInfo, Serializable)
-DECLARE_VAR(_T("ESTabCtrlItemInfo"),			_T(""), VariableType::VT_None, 0, false, true, false)
-DECLARE_VAR(_T("Title"),					_T("TITLE"), VariableType::VT_String, offsetof(ESTabCtrlItemInfo,m_sTitle), false, false, false)
-DECLARE_VAR(_T("Data"),						_T("DATA"), VariableType::VT_Int32, offsetof(ESTabCtrlItemInfo,m_nData), false, false, false)
-DECLARE_VAR(_T("Width"),					_T("WIDTH"), VariableType::VT_Int32, offsetof(ESTabCtrlItemInfo,m_nWidth), false, false, false)
-DECLARE_VAR(_T("Width Percent"),			_T("WIDTH_PERCENT"), VariableType::VT_Float, offsetof(ESTabCtrlItemInfo,m_fWidthPercent), false, false, false)
-DECLARE_VAR(_T("Image Default"),			_T("IMAGE_DEFAULT"), VariableType::VT_String, offsetof(ESTabCtrlItemInfo,m_sImageDefault), false, false, false)
-DECLARE_VAR(_T("Image Hover"),				_T("IMAGE_HOVER"), VariableType::VT_String, offsetof(ESTabCtrlItemInfo,m_sImageHover), false, false, false)
-DECLARE_VAR(_T("Image Pressed"),			_T("IMAGE_PRESSED"), VariableType::VT_String, offsetof(ESTabCtrlItemInfo,m_sImagePressed), false, false, false)
-DECLARE_VAR(_T("Image Active Default"),		_T("IMAGE_ACTIVE_DEFAULT"), VariableType::VT_String, offsetof(ESTabCtrlItemInfo,m_sImageActiveDefault), false, false, false)
-DECLARE_VAR(_T("Image Active Hover"),		_T("IMAGE_ACTIVE_HOVER"), VariableType::VT_String, offsetof(ESTabCtrlItemInfo,m_sImageActiveHover), false, false, false)
-DECLARE_VAR(_T("Image Active Pressed"),		_T("IMAGE_ACTIVE_PRESSED"), VariableType::VT_String, offsetof(ESTabCtrlItemInfo,m_sImageActivePressed), false, false, false)
+    DECLARE_VAR(_T("ESTabCtrlItemInfo"),			_T(""), VariableType::VT_None, 0, false, true, false)
+    DECLARE_VAR(_T("Title"),					_T("TITLE"), VariableType::VT_String, offsetof(ESTabCtrlItemInfo,m_sTitle), false, false, false)
+    DECLARE_VAR(_T("Data"),						_T("DATA"), VariableType::VT_Int32, offsetof(ESTabCtrlItemInfo,m_nData), false, false, false)
+    DECLARE_VAR(_T("Width"),					_T("WIDTH"), VariableType::VT_Int32, offsetof(ESTabCtrlItemInfo,m_nWidth), false, false, false)
+    DECLARE_VAR(_T("Width Percent"),			_T("WIDTH_PERCENT"), VariableType::VT_Float, offsetof(ESTabCtrlItemInfo,m_fWidthPercent), false, false, false)
+    DECLARE_VAR(_T("Image Default"),			_T("IMAGE_DEFAULT"), VariableType::VT_String, offsetof(ESTabCtrlItemInfo,m_sImageDefault), false, false, false)
+    DECLARE_VAR(_T("Image Hover"),				_T("IMAGE_HOVER"), VariableType::VT_String, offsetof(ESTabCtrlItemInfo,m_sImageHover), false, false, false)
+    DECLARE_VAR(_T("Image Pressed"),			_T("IMAGE_PRESSED"), VariableType::VT_String, offsetof(ESTabCtrlItemInfo,m_sImagePressed), false, false, false)
+    DECLARE_VAR(_T("Image Active Default"),		_T("IMAGE_ACTIVE_DEFAULT"), VariableType::VT_String, offsetof(ESTabCtrlItemInfo,m_sImageActiveDefault), false, false, false)
+    DECLARE_VAR(_T("Image Active Hover"),		_T("IMAGE_ACTIVE_HOVER"), VariableType::VT_String, offsetof(ESTabCtrlItemInfo,m_sImageActiveHover), false, false, false)
+    DECLARE_VAR(_T("Image Active Pressed"),		_T("IMAGE_ACTIVE_PRESSED"), VariableType::VT_String, offsetof(ESTabCtrlItemInfo,m_sImageActivePressed), false, false, false)
 END_DECLARE_VAR()
 
 ESTabCtrlItemInfo::~ESTabCtrlItemInfo(){
@@ -43,9 +43,9 @@ ESTabItemLinkedInfo::ESTabItemLinkedInfo(){
 }
 
 BEGIN_DECLARE_VAR(ESTabItemLinkedInfo, Serializable)
-DECLARE_VAR(_T("ESTabItemLinkedInfo"),		_T(""), VariableType::VT_None, 0, false, true, false)
-DECLARE_VAR(_T("ItemIndex"),			_T(""), VariableType::VT_Int32, offsetof(ESTabItemLinkedInfo,m_nItemIndex), false, false, false)
-DECLARE_VAR(_T("LinkedControl"),		_T(""), VariableType::VT_String, offsetof(ESTabItemLinkedInfo,m_sLinkedControl), false, false, false)
+    DECLARE_VAR(_T("ESTabItemLinkedInfo"),		_T(""), VariableType::VT_None, 0, false, true, false)
+    DECLARE_VAR(_T("ItemIndex"),			_T(""), VariableType::VT_Int32, offsetof(ESTabItemLinkedInfo,m_nItemIndex), false, false, false)
+    DECLARE_VAR(_T("LinkedControl"),		_T(""), VariableType::VT_String, offsetof(ESTabItemLinkedInfo,m_sLinkedControl), false, false, false)
 END_DECLARE_VAR()
 
 ESTabItemLinkedInfo::~ESTabItemLinkedInfo(){
@@ -58,9 +58,9 @@ ESTabCtrlItemInfoList::ESTabCtrlItemInfoList(){
 }
 
 BEGIN_DECLARE_VAR(ESTabCtrlItemInfoList, Serializable)
-DECLARE_VAR(_T("ESTabCtrlItemInfoList"),	_T(""), VariableType::VT_None, 0, false, true, false)
-DECLARE_VAR(_T("Infos"),				_T(""), VariableType::VT_None, offsetof(ESTabCtrlItemInfoList,m_listItems), false, true, true)
-DECLARE_VAR(_T("LinkedInfos"),			_T(""), VariableType::VT_None, offsetof(ESTabCtrlItemInfoList,m_linkedInfos), false, true, true)
+    DECLARE_VAR(_T("ESTabCtrlItemInfoList"),	_T(""), VariableType::VT_None, 0, false, true, false)
+    DECLARE_VAR(_T("Infos"),				_T(""), VariableType::VT_None, offsetof(ESTabCtrlItemInfoList,m_listItems), false, true, true)
+    DECLARE_VAR(_T("LinkedInfos"),			_T(""), VariableType::VT_None, offsetof(ESTabCtrlItemInfoList,m_linkedInfos), false, true, true)
 END_DECLARE_VAR()
 
 ESTabCtrlItemInfoList::~ESTabCtrlItemInfoList(){
@@ -88,61 +88,24 @@ ESChildControlTabCtrl::ESChildControlTabCtrl(){
 	pGUI->tabctrl.m_itemTextFont.CopyFont(&m_tabItemFont);
 	pGUI->tabctrl.m_activeItemTextFont.CopyFont(&m_tabItemActiveFont);
     }
-/*
+
 BEGIN_DECLARE_VAR(ESChildControlTabCtrl, ESChildControl)
-DECLARE_VAR(_T("ESChildControlTabCtrl"),		_T(""), VariableType::VT_None, 0, false, true, false)
-DECLARE_VAR(_T("Item Image"),				_T(""), VariableType::VT_Image, offsetof(ESChildControlTabCtrl,m_imgItemNormal), false, false, false)
-DECLARE_VAR(_T("Hover Item Image"),			_T(""), VariableType::VT_Image, offsetof(ESChildControlTabCtrl,m_imgItemHover), false, false, false)
-DECLARE_VAR(_T("Active Item Image"),		_T(""), VariableType::VT_Image, offsetof(ESChildControlTabCtrl,m_imgItemActive), false, false, false)
-DECLARE_VAR(_T("Item Image File"),			_T(""), VariableType::VT_String, offsetof(ESChildControlTabCtrl,m_sImgFileItemNormal), false, false, false)
-DECLARE_VAR(_T("Hover Item Image File"),	_T(""), VariableType::VT_String, offsetof(ESChildControlTabCtrl,m_sImgFileItemHover), false, false, false)
-DECLARE_VAR(_T("Active Item Image File"),	_T(""), VariableType::VT_String, offsetof(ESChildControlTabCtrl,m_sImgFileItemActive), false, false, false)
-//{_T("OmitBorder"),				_string(""), VariableType::VT_Rect, offsetof(ESChildControlTabCtrl,m_rcItemOmitBorder), false, false, false }, \
-DECLARE_VAR(_T("OmitBorder"),				_T(""), VariableType::VT_Rect, offsetof(ESChildControlTabCtrl,m_rcItemOmitBorder), false, false, false)
-DECLARE_VAR(_T("UseHandCursor"),			_T(""), VariableType::VT_Bool, offsetof(ESChildControlTabCtrl,m_bUseHandCursor), false, false, false)
-DECLARE_VAR(_T("Item Font"),				_T(""), VariableType::VT_Font, offsetof(ESChildControlTabCtrl,m_tabItemFont), false, false, false)
-DECLARE_VAR(_T("Active Item Font"),			_T(""), VariableType::VT_Font, offsetof(ESChildControlTabCtrl,m_tabItemActiveFont), false, false, false)
-DECLARE_VAR(_T("Item Text Color"),			_T(""), VariableType::VT_Color32, offsetof(ESChildControlTabCtrl,m_crTabItemText), false, false, false)
-DECLARE_VAR(_T("Active Item Text Color"),	_T(""), VariableType::VT_Color32, offsetof(ESChildControlTabCtrl,m_crActiveTabItemText), false, false, false)
-DECLARE_VAR(_T("Active Item"),				_T(""), VariableType::VT_Int32, offsetof(ESChildControlTabCtrl,m_nActiveItem), false, false, false)
-DECLARE_VAR(_T("Items"),					_T(""), VariableType::VT_None, offsetof(ESChildControlTabCtrl,m_listItems), false, true, true)
+    DECLARE_VAR(_T("ESChildControlTabCtrl"),	_T(""), VariableType::VT_None, 0, false, true, false)
+    DECLARE_VAR(_T("Item Image"),				_T(""), VariableType::VT_Image, offsetof(ESChildControlTabCtrl,m_imgItemNormal), false, false, false)
+    DECLARE_VAR(_T("Hover Item Image"),			_T(""), VariableType::VT_Image, offsetof(ESChildControlTabCtrl,m_imgItemHover), false, false, false)
+    DECLARE_VAR(_T("Active Item Image"),		_T(""), VariableType::VT_Image, offsetof(ESChildControlTabCtrl,m_imgItemActive), false, false, false)
+    DECLARE_VAR(_T("Item Image File"),			_T(""), VariableType::VT_String, offsetof(ESChildControlTabCtrl,m_sImgFileItemNormal), false, false, false)
+    DECLARE_VAR(_T("Hover Item Image File"),	_T(""), VariableType::VT_String, offsetof(ESChildControlTabCtrl,m_sImgFileItemHover), false, false, false)
+    DECLARE_VAR(_T("Active Item Image File"),	_T(""), VariableType::VT_String, offsetof(ESChildControlTabCtrl,m_sImgFileItemActive), false, false, false)
+    DECLARE_VAR(_T("OmitBorder"),				_T(""), VariableType::VT_Rect, offsetof(ESChildControlTabCtrl,m_rcItemOmitBorder), false, false, false)
+    DECLARE_VAR(_T("UseHandCursor"),			_T(""), VariableType::VT_Bool, offsetof(ESChildControlTabCtrl,m_bUseHandCursor), false, false, false)
+    DECLARE_VAR(_T("Item Font"),				_T(""), VariableType::VT_Font, offsetof(ESChildControlTabCtrl,m_tabItemFont), false, false, false)
+    DECLARE_VAR(_T("Active Item Font"),			_T(""), VariableType::VT_Font, offsetof(ESChildControlTabCtrl,m_tabItemActiveFont), false, false, false)
+    DECLARE_VAR(_T("Item Text Color"),			_T(""), VariableType::VT_Color32, offsetof(ESChildControlTabCtrl,m_crTabItemText), false, false, false)
+    DECLARE_VAR(_T("Active Item Text Color"),	_T(""), VariableType::VT_Color32, offsetof(ESChildControlTabCtrl,m_crActiveTabItemText), false, false, false)
+    DECLARE_VAR(_T("Active Item"),				_T(""), VariableType::VT_Int32, offsetof(ESChildControlTabCtrl,m_nActiveItem), false, false, false)
+    DECLARE_VAR(_T("Items"),					_T(""), VariableType::VT_None, offsetof(ESChildControlTabCtrl,m_listItems), false, true, true)
 END_DECLARE_VAR()
-*/
-
-const AFX_VARINFOMAP* ESChildControlTabCtrl::GetVariableInfoMap() const
-{
-    return GetThisVariableInfoMap();
-}
-
-const AFX_VARINFOMAP* __stdcall ESChildControlTabCtrl::GetThisVariableInfoMap()
-{
-    static const VariableInfo _varInfoEntries[] =
-    {
-        {_T("ESChildControlTabCtrl"),		_T(""), VariableType::VT_None, 0, false, true, false},
-            {_T("Item Image"),				_T(""), VariableType::VT_Image, offsetof(ESChildControlTabCtrl,m_imgItemNormal), false, false, false},
-            {_T("Hover Item Image"),			_T(""), VariableType::VT_Image, offsetof(ESChildControlTabCtrl,m_imgItemHover), false, false, false},
-            {_T("Active Item Image"),		_T(""), VariableType::VT_Image, offsetof(ESChildControlTabCtrl,m_imgItemActive), false, false, false},
-            {_T("Item Image File"),			_T(""), VariableType::VT_String, offsetof(ESChildControlTabCtrl,m_sImgFileItemNormal), false, false, false},
-            {_T("Hover Item Image File"),	_T(""), VariableType::VT_String, offsetof(ESChildControlTabCtrl,m_sImgFileItemHover), false, false, false},
-            {_T("Active Item Image File"),	_T(""), VariableType::VT_String, offsetof(ESChildControlTabCtrl,m_sImgFileItemActive), false, false, false},
-            //{_T("OmitBorder"),				_string(""), VariableType::VT_Rect, offsetof(ESChildControlTabCtrl,m_rcItemOmitBorder), false, false, false }, \
-            {_T("OmitBorder"),				_T(""), VariableType::VT_Rect, offsetof(ESChildControlTabCtrl,m_rcItemOmitBorder), false, false, false},
-                {_T("UseHandCursor"),			_T(""), VariableType::VT_Bool, offsetof(ESChildControlTabCtrl,m_bUseHandCursor), false, false, false},
-            {_T("Item Font"),				_T(""), VariableType::VT_Font, offsetof(ESChildControlTabCtrl,m_tabItemFont), false, false, false},
-            {_T("Active Item Font"),			_T(""), VariableType::VT_Font, offsetof(ESChildControlTabCtrl,m_tabItemActiveFont), false, false, false},
-            {_T("Item Text Color"),			_T(""), VariableType::VT_Color32, offsetof(ESChildControlTabCtrl,m_crTabItemText), false, false, false},
-            {_T("Active Item Text Color"),	_T(""), VariableType::VT_Color32, offsetof(ESChildControlTabCtrl,m_crActiveTabItemText), false, false, false},
-            {_T("Active Item"),				_T(""), VariableType::VT_Int32, offsetof(ESChildControlTabCtrl,m_nActiveItem), false, false, false},
-            {_T("Items"),					_T(""), VariableType::VT_None, offsetof(ESChildControlTabCtrl,m_listItems), false, true, true},
-            {_T(""), _T(""), VariableType::VT_None, -1, false, false, false },
-    };
-    static const AFX_VARINFOMAP varInfoMap =
-    { &ESChildControl::GetThisVariableInfoMap, &_varInfoEntries[0] };
-    return &varInfoMap;
-}
-
-
-
 
 ESChildControlTabCtrl::~ESChildControlTabCtrl(){
 }
